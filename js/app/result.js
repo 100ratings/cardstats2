@@ -1,4 +1,12 @@
 $(document).ready(function(){
+    // Probabilidades fixas fornecidas pelo usuário
+    const FIXED_PROBABILITIES = {
+        "S": [5.33, 1.78, 2.49, 1.78, 1.78, 1.78, 2.84, 1.77, 1.95, 2.31, 3.20, 4.44, 3.55],
+        "H": [5.33, 1.78, 2.49, 1.78, 1.78, 1.78, 2.84, 1.77, 1.95, 2.31, 3.20, 4.44, 3.55],
+        "C": [2.29, 0.76, 1.07, 0.76, 0.76, 0.76, 1.22, 0.76, 0.83, 0.99, 1.37, 1.90, 1.52],
+        "D": [2.29, 0.76, 1.07, 0.76, 0.76, 0.76, 1.22, 0.76, 0.83, 0.99, 1.37, 1.90, 1.52]
+    };
+
     showResults();
 
     function getP(card, suit) {
@@ -26,49 +34,31 @@ $(document).ready(function(){
         
         var cardShort = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         var suitSymbols = ["&spades;", "&hearts;", "&clubs;", "&diams;"];
+        var suitNames = ["S", "H", "C", "D"];
         var colors = ["black", "red", "black", "red"];
         
         var targetOdds = 2700 + k;
-        var seedBase = (card * 1000) + (suit * 100) + n;
-
-        var finalCardOdds, finalPosOdds;
-        var found = false;
-
-        // Gerar um ponto de partida aleatório mas fixo (baseado na semente) entre 51.10 e 52.90
-        // Isso garante que a carta não seja sempre 51.00 ou 52.00
-        var startC = 51.10 + (seededRandom(seedBase + 500) * 1.80);
         
-        // Procurar por um par de números com 2 casas decimais que multiplicados deem o alvo
-        // Expandimos a busca a partir do ponto inicial
-        for (var offset = 0; offset <= 2.00; offset += 0.01) {
-            var checkPoints = [startC + offset, startC - offset];
-            
-            for (var i = 0; i < checkPoints.length; i++) {
-                var c = parseFloat(checkPoints[i].toFixed(2));
-                if (c < 50.00 || c > 54.00) continue;
+        // 1) Obter a probabilidade fixa da carta selecionada
+        var cardFixedPerc = FIXED_PROBABILITIES[suitNames[suit]][card];
+        var finalCardOdds = 100 / cardFixedPerc;
 
-                var pNeeded = targetOdds / c;
-                var pRounded = Math.round(pNeeded * 100) / 100;
-                
-                if (Math.round(c * pRounded) === targetOdds) {
-                    finalCardOdds = c;
-                    finalPosOdds = pRounded;
-                    found = true;
-                    break;
-                }
-            }
-            if (found) break;
-        }
-
-        // Fallback caso a busca falhe (muito improvável)
-        if (!found) {
-            finalCardOdds = 52.00;
-            finalPosOdds = (targetOdds / 52.00);
-        }
+        // 2) Calcular a probabilidade da posição para atingir o ALVO
+        // Probabilidade Final = (1/finalCardOdds) * (1/finalPosOdds) = 1/targetOdds
+        // finalPosOdds = targetOdds / finalCardOdds
+        var finalPosOdds = targetOdds / finalCardOdds;
         
         var cardPerc = (100 / finalCardOdds).toFixed(2);
         var posPerc = (100 / finalPosOdds).toFixed(2);
-        var sampleSize = 125000 + Math.floor(seededRandom(seedBase) * 1000);
+
+        // 3) Tamanho da amostra dinâmico
+        // Lógica: Base 1.250.000 + (dias desde 01/01/2026 * 150) + variação aleatória diária
+        var now = new Date();
+        var start = new Date(2026, 0, 1);
+        var diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+        var dailyIncrease = diffDays * 150;
+        var seedBase = (card * 1000) + (suit * 100) + n;
+        var sampleSize = 1250000 + dailyIncrease + Math.floor(seededRandom(seedBase) * 500);
         
         $("#sampleSize").text(sampleSize.toLocaleString('pt-BR'));
         $("#cardLabel").html(cardShort[card] + suitSymbols[suit]);
@@ -83,36 +73,53 @@ $(document).ready(function(){
         if (window.spinner) window.spinner.stop();
         var kStr = k.toString().padStart(2, '0');
         sendToWebhook(kStr);
-        renderCharts(card, suit, n, cardShort[card], seedBase);
+        renderCharts(card, suit, n, seedBase);
     }
 
-    function renderCharts(card, suit, n, cardVal, seedBase) {
+    function renderCharts(card, suit, n, seedBase) {
         var cardsData = [];
         var positionsData = [];
+        var suitNames = ["S", "H", "C", "D"];
+        
+        // Preencher dados das cartas com as probabilidades fixas
+        // Ordem: Espadas (0-12), Copas (13-25), Paus (26-38), Ouros (39-51)
+        ["S", "H", "C", "D"].forEach(s => {
+            FIXED_PROBABILITIES[s].forEach(p => {
+                cardsData.push(p);
+            });
+        });
+
+        // Preencher dados das posições (aleatório leve em torno de 1.92% que é 1/52)
         for (var i = 0; i < 52; i++) {
-            cardsData.push(Math.floor(seededRandom(seedBase + i) * 1000) + 500);
-            positionsData.push(Math.floor(seededRandom(seedBase + i + 100) * 1000) + 500);
+            positionsData.push(1.8 + (seededRandom(seedBase + i + 100) * 0.25));
         }
 
-        var stats = { cards: cardsData, positions: positionsData };
         var ticks = new Array(52), pticks = new Array(52), selCardSeries = new Array(52), selPosSeries = new Array(52);
         
         for (var x = 0; x < 52; x++) {
-            ticks[x] = ""; pticks[x] = ""; selCardSeries[x] = 0; selPosSeries[x] = 0;
+            ticks[x] = "A"; // Sempre 'A' conforme solicitado
+            pticks[x] = ""; 
+            selCardSeries[x] = 0; 
+            selPosSeries[x] = 0;
         }
         
-        ticks[0] = cardVal; ticks[6] = "♠"; ticks[13] = cardVal; ticks[19] = "<font color='red'>♥</font>";
-        ticks[26] = cardVal; ticks[32] = "♣"; ticks[39] = cardVal; ticks[45] = "<font color='red'>♦</font>";
+        // Marcar os naipes no eixo X para orientação
+        ticks[6] = "♠"; 
+        ticks[19] = "<font color='red'>♥</font>";
+        ticks[32] = "♣"; 
+        ticks[45] = "<font color='red'>♦</font>";
+        
         pticks[0] = "1"; pticks[12] = "13"; pticks[25] = "26"; pticks[38] = "39"; pticks[51] = "52";
 
-        var suitHighlightMap = [6, 19, 32, 45];
-        var cardIdx = suitHighlightMap[suit];
-        selCardSeries[cardIdx] = stats.cards[cardIdx];
-        stats.cards[cardIdx] = 0;
+        // O traço vermelho deve ser na carta selecionada
+        // Ordem no array cardsData: S(0-12), H(13-25), C(26-38), D(39-51)
+        var cardIdx = (suit * 13) + card;
+        selCardSeries[cardIdx] = cardsData[cardIdx];
+        cardsData[cardIdx] = 0;
 
         var posIdx = n - 1;
-        selPosSeries[posIdx] = stats.positions[posIdx];
-        stats.positions[posIdx] = 0;
+        selPosSeries[posIdx] = positionsData[posIdx];
+        positionsData[posIdx] = 0;
 
         var commonOptions = {
             stackSeries: true,
@@ -128,11 +135,11 @@ $(document).ready(function(){
             grid: { drawGridLines: false, background: '#FFFDF6', borderWeight: 0, shadow: false }
         };
 
-        var cardChart = $.jqplot('chart1', [stats.cards, selCardSeries], $.extend(true, {}, commonOptions, {
+        var cardChart = $.jqplot('chart1', [cardsData, selCardSeries], $.extend(true, {}, commonOptions, {
             axes: { xaxis: { ticks: ticks } }
         }));
 
-        var posChart = $.jqplot('chart2', [stats.positions, selPosSeries], $.extend(true, {}, commonOptions, {
+        var posChart = $.jqplot('chart2', [positionsData, selPosSeries], $.extend(true, {}, commonOptions, {
             axes: { xaxis: { ticks: pticks } }
         }));
 

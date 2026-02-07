@@ -13,6 +13,10 @@
     <link href="css/ratchet-theme-ios.min.css" rel="stylesheet">
     <link href="css/ra.css" rel="stylesheet">
     <script>
+        // Redirecionar para a landing page se não vier de lá
+        if (!window.location.search.includes('start=true')) {
+            window.location.href = 'landing.html';
+        }
         cardFirst = true;
         window.onpageshow = function(evt) {
             if (evt.persisted) {
