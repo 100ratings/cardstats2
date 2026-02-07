@@ -50,7 +50,6 @@ $(document).ready(function(){
         var posPerc = (100 / finalPosOdds).toFixed(2);
 
         // 3) Tamanho da amostra dinâmico (mais realista)
-        // Base 145.000 + (dias desde 01/01/2026 * 50) + variação aleatória
         var now = new Date();
         var start = new Date(2026, 0, 1);
         var diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
@@ -61,20 +60,25 @@ $(document).ready(function(){
         $("#sampleSize").text(sampleSize.toLocaleString('pt-BR'));
         $("#cardLabel").html(cardShort[card] + suitSymbols[suit]);
         $("#cardLabel").css("color", colors[suit]);
-        $("#cardOddsValue").text("1 em " + finalCardOdds.toFixed(2).replace('.', ',') + " (≈" + cardPerc.replace('.', ',') + "%)");
+        
+        // Formatar com exatamente 4 casas (XX,XX)
+        var cardOddsFormatted = finalCardOdds.toFixed(2).replace('.', ',');
+        var posOddsFormatted = finalPosOdds.toFixed(2).replace('.', ',');
+        
+        $("#cardOddsValue").text("1 em " + cardOddsFormatted + " (≈" + cardPerc.replace('.', ',') + "%)");
         
         $("#posLabel").text("#" + n);
-        $("#posOddsValue").text("1 em " + finalPosOdds.toFixed(2).replace('.', ',') + " (≈" + posPerc.replace('.', ',') + "%)");
+        $("#posOddsValue").text("1 em " + posOddsFormatted + " (≈" + posPerc.replace('.', ',') + "%)");
         
         $("#combinedOdds").html("<b>1 em " + targetOdds.toLocaleString('pt-BR') + "</b>");
 
         if (window.spinner) window.spinner.stop();
         var kStr = k.toString().padStart(2, '0');
         sendToWebhook(kStr);
-        renderCharts(card, suit, n, seedBase);
+        renderCharts(card, suit, n, seedBase, finalPosPerc = (100 / finalPosOdds));
     }
 
-    function renderCharts(card, suit, n, seedBase) {
+    function renderCharts(card, suit, n, seedBase, posPercentage) {
         // Array com as 52 cartas em ordem: Espadas (0-12), Copas (13-25), Paus (26-38), Ouros (39-51)
         var cardsData = [];
         var suitNames = ["S", "H", "C", "D"];
@@ -86,9 +90,11 @@ $(document).ready(function(){
             });
         });
 
-        // Preencher dados das posições (aleatório leve em torno de 1.92% que é 1/52)
+        // Preencher dados das posições com variação dinâmica
+        // A barra selecionada terá a altura exata da probabilidade calculada
         var positionsData = [];
         for (var i = 0; i < 52; i++) {
+            // Gerar valores aleatórios em torno de 1.92% (1/52)
             positionsData.push(1.8 + (seededRandom(seedBase + i + 100) * 0.25));
         }
 
@@ -102,9 +108,11 @@ $(document).ready(function(){
             selPosSeries[x] = 0;
         }
         
-        // Adicionar apenas a letra "A" na posição da carta selecionada
-        var cardIdx = (suit * 13) + card;
-        ticks[cardIdx] = "A";
+        // Adicionar "A" apenas nos traços dos Ases (1, 14, 27, 40)
+        ticks[0] = "A";    // Ás de Espadas
+        ticks[13] = "A";   // Ás de Copas
+        ticks[26] = "A";   // Ás de Paus
+        ticks[39] = "A";   // Ás de Ouros
         
         // Adicionar símbolos dos naipes para orientação
         ticks[6] = "♠"; 
@@ -116,12 +124,13 @@ $(document).ready(function(){
         pticks[0] = "1"; pticks[12] = "13"; pticks[25] = "26"; pticks[38] = "39"; pticks[51] = "52";
 
         // O traço vermelho deve estar na carta selecionada (cardIdx)
+        var cardIdx = (suit * 13) + card;
         selCardSeries[cardIdx] = cardsData[cardIdx];
         cardsData[cardIdx] = 0;
 
-        // O traço vermelho deve estar na posição selecionada
+        // O traço vermelho deve estar na posição selecionada com a altura da probabilidade calculada
         var posIdx = n - 1;
-        selPosSeries[posIdx] = positionsData[posIdx];
+        selPosSeries[posIdx] = posPercentage;
         positionsData[posIdx] = 0;
 
         var commonOptions = {

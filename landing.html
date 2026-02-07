@@ -20,6 +20,18 @@
             flex-direction: column;
             min-height: 100vh;
         }
+        .bar {
+            background-color: #007AFF;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            border-bottom: 1px solid #0051d5;
+        }
+        .bar h1 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 600;
+        }
         .container {
             flex: 1;
             padding: 20px;
@@ -27,22 +39,6 @@
             margin: 0 auto;
             width: 100%;
             overflow-y: auto;
-        }
-        header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 2px solid #cccccc;
-            margin-bottom: 20px;
-        }
-        h1 {
-            font-size: 28px;
-            margin: 0;
-            color: #1a1a1a;
-        }
-        .subtitle {
-            font-size: 14px;
-            color: #666666;
-            margin-top: 5px;
         }
         .content {
             line-height: 1.7;
@@ -57,13 +53,13 @@
         .highlight {
             background-color: #f5f5f5;
             padding: 12px;
-            border-left: 4px solid #b22222;
+            border-left: 4px solid #007AFF;
             margin: 15px 0;
             border-radius: 3px;
         }
         .highlight h3 {
             margin: 0 0 8px 0;
-            color: #b22222;
+            color: #007AFF;
             font-size: 15px;
         }
         .highlight ul {
@@ -77,14 +73,14 @@
         .button-wrapper {
             padding: 20px;
             background-color: #FFFDF6;
-            border-top: 2px solid #cccccc;
+            border-top: 1px solid #e0e0e0;
             position: sticky;
             bottom: 0;
             width: 100%;
             text-align: center;
         }
         .btn-poker {
-            background-color: #b22222;
+            background-color: #007AFF;
             border: none;
             color: white;
             padding: 12px 25px;
@@ -95,11 +91,11 @@
             cursor: pointer;
             width: 100%;
             max-width: 300px;
-            box-shadow: 0 4px #8b0000;
+            box-shadow: 0 4px rgba(0, 122, 255, 0.3);
             transition: all 0.2s;
         }
         .btn-poker:active {
-            box-shadow: 0 2px #8b0000;
+            box-shadow: 0 2px rgba(0, 122, 255, 0.3);
             transform: translateY(2px);
         }
         .footer {
@@ -111,12 +107,11 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Análise Estatística de Cartas</h1>
-            <p class="subtitle">Ferramenta profissional para jogadores de Poker e Blackjack</p>
-        </header>
+    <div class="bar">
+        <h1>Análise Estatística de Cartas</h1>
+    </div>
 
+    <div class="container">
         <div class="content">
             <p>
                 Bem-vindo à plataforma de análise estatística de cartas, desenvolvida para jogadores profissionais de Poker e Blackjack (21). Esta ferramenta oferece análise detalhada sobre a distribuição e probabilidade de cartas em diferentes cenários de jogo.
