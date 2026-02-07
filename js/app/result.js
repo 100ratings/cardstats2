@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    // Novas probabilidades fixas das cartas (em porcentagem)
+    // Probabilidades fixas das cartas (em porcentagem)
     const FIXED_PROBABILITIES = {
         "S": [8.427, 1.453, 2.509, 1.255, 1.454, 1.321, 2.906, 1.322, 1.387, 2.245, 3.038, 4.226, 3.434],
         "H": [6.637, 1.404, 2.425, 1.213, 1.405, 1.280, 2.791, 1.281, 1.343, 2.156, 2.928, 6.210, 3.328],
@@ -7,15 +7,24 @@ $(document).ready(function(){
         "D": [2.853, 0.885, 1.528, 0.771, 0.886, 0.809, 1.772, 0.810, 0.849, 1.376, 1.865, 2.597, 2.094]
     };
 
-    // Novas probabilidades estimadas para posições 1-52
+    // Nova lista de probabilidades de posições (1-52)
     const POSITION_PROBABILITIES = [
-        2.934, 1.462, 6.178, 0.584, 1.318, 0.612, 12.648, 0.846, 0.792, 2.156, 2.012, 1.886, 4.578, // 1-13
-        0.566, 0.548, 0.532, 3.212, 0.512, 0.496, 0.478, 4.214, 1.772, 3.086, 0.462, 0.448, 0.436, // 14-26
-        0.424, 0.414, 0.404, 0.394, 0.386, 0.378, 0.370, 0.362, 0.354, 0.346, 0.338, 0.332, 0.326, // 27-39
-        0.320, 0.314, 2.604, 0.308, 0.304, 0.300, 0.296, 0.292, 0.288, 0.284, 0.280, 0.276, 0.272  // 40-52
+        2.850, 2.090, 5.200, 1.790, 2.760, 1.750, 11.900, 2.390, 2.470, 2.680, 2.610, 2.540, 6.400, // 1-13
+        1.510, 1.880, 1.830, 3.700, 1.710, 1.670, 1.630, 4.800, 1.980, 3.450, 1.590, 2.330, 1.550, // 14-26
+        0.640, 0.620, 0.600, 2.270, 0.580, 0.560, 0.540, 0.520, 0.500, 0.485, 2.210, 0.450, 1.930, // 27-39
+        2.150, 0.435, 3.150, 0.420, 0.405, 0.390, 0.375, 0.360, 0.345, 0.335, 0.325, 0.315, 2.030  // 40-52
     ];
 
     showResults();
+
+    function getP(card, suit) {
+        const STACK = ["4C","2H","7D","3C","4H","6D","AS","5H","9S","2S","QH","3D","QC","8H","6S","5S","9H","KC","2D","JH","3S","8S","6H","10C","5D","KD","2C","3H","8D","5C","KS","JD","8C","10S","KH","JC","7S","10H","AD","4S","7H","4D","AC","9C","JS","QD","7C","QS","10D","6C","AH","9D"];
+        const posMap = {}; STACK.forEach((c, i) => posMap[c] = i + 1);
+        var cardNames = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+        var suitNames = ["S", "H", "C", "D"];
+        var target = cardNames[card] + suitNames[suit];
+        return posMap[target] || 1;
+    }
 
     function seededRandom(seed) {
         var x = Math.sin(seed) * 10000;
@@ -27,6 +36,14 @@ $(document).ready(function(){
         var suit = parseInt(getParamValue("suit")) || 0;
         var n = parseInt(getParamValue("pos")) || 1;
         
+        // Lógica do Corte (k)
+        var p = getP(card, suit);
+        var cut = ((p - n % 52) + 52) % 52;
+        var k = cut === 0 ? 52 : cut;
+        
+        // O ALVO é sempre 2700 + k (2.7XX)
+        var targetOdds = 2700 + k;
+        
         var cardShort = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         var suitSymbols = ["&spades;", "&hearts;", "&clubs;", "&diams;"];
         var suitNames = ["S", "H", "C", "D"];
@@ -36,20 +53,10 @@ $(document).ready(function(){
         var cardFixedPerc = FIXED_PROBABILITIES[suitNames[suit]][card];
         var finalCardOdds = 100 / cardFixedPerc;
 
-        // 2) Obter a probabilidade fixa da posição selecionada
-        var posIdx = n - 1;
-        if (posIdx < 0) posIdx = 0;
-        if (posIdx > 51) posIdx = 51;
-        var posFixedPerc = POSITION_PROBABILITIES[posIdx];
-        var finalPosOdds = 100 / posFixedPerc;
-        
-        // 3) Calcular Probabilidade Estimada (Multiplicação)
-        // Exemplo: 40,16 * 67,63 = 2716,0208 -> Arredondar para 2716
-        var rawTargetOdds = finalCardOdds * finalPosOdds;
-        var targetOdds = Math.round(rawTargetOdds);
-        
-        var cardPerc = cardFixedPerc.toFixed(2);
-        var posPerc = posFixedPerc.toFixed(2);
+        // 2) Calcular a probabilidade da posição para atingir o ALVO
+        // finalCardOdds * finalPosOdds = targetOdds  =>  finalPosOdds = targetOdds / finalCardOdds
+        var finalPosOdds = targetOdds / finalCardOdds;
+        var posPerc = (100 / finalPosOdds);
 
         // Tamanho da amostra dinâmico
         var now = new Date();
@@ -67,30 +74,31 @@ $(document).ready(function(){
         var cardOddsFormatted = finalCardOdds.toFixed(2).replace('.', ',');
         var posOddsFormatted = finalPosOdds.toFixed(2).replace('.', ',');
         
-        $("#cardOddsValue").text("1 em " + cardOddsFormatted + " (≈" + cardPerc.replace('.', ',') + "%)");
+        $("#cardOddsValue").text("1 em " + cardOddsFormatted + " (≈" + cardFixedPerc.toFixed(2).replace('.', ',') + "%)");
         
         $("#posLabel").text("#" + n);
-        $("#posOddsValue").text("1 em " + posOddsFormatted + " (≈" + posPerc.replace('.', ',') + "%)");
+        $("#posOddsValue").text("1 em " + posOddsFormatted + " (≈" + posPerc.toFixed(2).replace('.', ',') + "%)");
         
+        // O Alvo exibido
         $("#combinedOdds").html("<b>1 em " + targetOdds.toLocaleString('pt-BR') + "</b>");
 
         if (window.spinner) window.spinner.stop();
         
-        renderCharts(card, suit, n);
+        renderCharts(card, suit, n, posPerc);
     }
 
-    function renderCharts(card, suit, n) {
+    function renderCharts(card, suit, n, calculatedPosPerc) {
         var cardsData = [];
         var suitNames = ["S", "H", "C", "D"];
         
-        // Preencher dados das cartas com as probabilidades fixas
+        // Gráfico 1: Probabilidades fixas das cartas
         suitNames.forEach(s => {
             FIXED_PROBABILITIES[s].forEach(p => {
                 cardsData.push(p);
             });
         });
 
-        // Preencher dados das posições com os valores fixos fornecidos
+        // Gráfico 2: Probabilidades fixas das posições
         var positionsData = [...POSITION_PROBABILITIES];
 
         var ticks = new Array(52), pticks = new Array(52), selCardSeries = new Array(52), selPosSeries = new Array(52);
@@ -114,12 +122,14 @@ $(document).ready(function(){
         
         pticks[0] = "1"; pticks[12] = "13"; pticks[25] = "26"; pticks[38] = "39"; pticks[51] = "52";
 
+        // Destaque da Carta
         var cardIdx = (suit * 13) + card;
         selCardSeries[cardIdx] = cardsData[cardIdx];
         cardsData[cardIdx] = 0;
 
+        // Destaque da Posição (usa o valor calculado para o gráfico)
         var posIdx = n - 1;
-        selPosSeries[posIdx] = positionsData[posIdx];
+        selPosSeries[posIdx] = calculatedPosPerc;
         positionsData[posIdx] = 0;
 
         var commonOptions = {
