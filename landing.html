@@ -7,140 +7,61 @@
     <link href="css/ratchet.css" rel="stylesheet">
     <link href="css/ratchet-theme-ios.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
-            background-color: #FFFDF6;
-            color: #333333;
-            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            background-color: #EFEFF4;
+            color: #000000;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-        }
-        .bar {
-            background-color: #007AFF;
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-            border-bottom: 1px solid #0051d5;
-        }
-        .bar h1 {
-            font-size: 18px;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            font-weight: 600;
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
         }
         .container {
-            flex: 1;
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-            overflow-y: auto;
-        }
-        .content {
-            line-height: 1.7;
-            color: #444444;
-            margin-bottom: 20px;
-        }
-        .content p {
-            margin: 12px 0;
-            font-size: 14px;
-            text-align: justify;
-        }
-        .highlight {
-            background-color: #f5f5f5;
-            padding: 12px;
-            border-left: 4px solid #007AFF;
-            margin: 15px 0;
-            border-radius: 3px;
-        }
-        .highlight h3 {
-            margin: 0 0 8px 0;
-            color: #007AFF;
-            font-size: 15px;
-        }
-        .highlight ul {
-            margin: 8px 0;
-            padding-left: 18px;
-        }
-        .highlight li {
-            margin: 5px 0;
-            font-size: 13px;
-        }
-        .button-wrapper {
-            padding: 20px;
-            background-color: #FFFDF6;
-            border-top: 1px solid #e0e0e0;
-            position: sticky;
-            bottom: 0;
-            width: 100%;
             text-align: center;
+            padding: 20px;
+            max-width: 400px;
+            background-color: #F7F7F7;
+            border: 1px solid #CECECE;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            color: #929292;
         }
         .btn-poker {
-            background-color: #007AFF;
+            background-color: #FF0000;
             border: none;
-            color: white;
-            padding: 12px 25px;
-            font-size: 15px;
+            color: #FFFFFF;
+            padding: 15px 30px;
+            font-size: 18px;
             border-radius: 5px;
             text-transform: uppercase;
             font-weight: bold;
             cursor: pointer;
-            width: 100%;
-            max-width: 300px;
-            box-shadow: 0 4px rgba(0, 122, 255, 0.3);
-            transition: all 0.2s;
+            box-shadow: 0 4px #929292;
         }
         .btn-poker:active {
-            box-shadow: 0 2px rgba(0, 122, 255, 0.3);
+            box-shadow: 0 2px #929292;
             transform: translateY(2px);
-        }
-        .footer {
-            text-align: center;
-            font-size: 11px;
-            color: #999999;
-            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="bar">
-        <h1>Análise Estatística de Cartas</h1>
-    </div>
-
     <div class="container">
-        <div class="content">
-            <p>
-                Bem-vindo à plataforma de análise estatística de cartas, desenvolvida para jogadores profissionais de Poker e Blackjack (21). Esta ferramenta oferece análise detalhada sobre a distribuição e probabilidade de cartas em diferentes cenários de jogo.
-            </p>
-
-            <p>
-                Nosso sistema coleta dados de milhares de jogadas para fornecer estatísticas precisas sobre como as cartas se distribuem quando cortadas em diferentes posições do baralho. Essas informações são fundamentais para otimizar suas estratégias.
-            </p>
-
-            <div class="highlight">
-                <h3>Como Funciona</h3>
-                <ul>
-                    <li><strong>Selecione uma carta:</strong> Escolha qualquer carta do baralho (Ás a Rei)</li>
-                    <li><strong>Indique a posição:</strong> Digite onde você cortaria o baralho (1 a 52)</li>
-                    <li><strong>Receba os resultados:</strong> Obtenha as probabilidades precisas com gráficos visuais</li>
-                </ul>
-            </div>
-
-            <p>
-                Os dados são atualizados continuamente, garantindo informações precisas e confiáveis. Utilize esses dados para tomar decisões mais inteligentes e aumentar suas chances de sucesso.
-            </p>
-
-            <div class="footer">
-                <p>Análise estatística baseada em dados coletados continuamente. Atualizado regularmente.</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="button-wrapper">
+        <h1>Estatísticas de Cartas</h1>
+        <p>
+            Esta plataforma é utilizada por jogadores profissionais de Poker para analisar a distribuição estatística e probabilidades de cartas, otimizando estratégias para jogos como Black Jack (21).
+        </p>
         <button class="btn-poker" onclick="window.location.href='index.html?start=true'">Acessar Analisador</button>
     </div>
 </body>

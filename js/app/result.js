@@ -7,16 +7,15 @@ $(document).ready(function(){
         "D": [2.29, 0.76, 1.07, 0.76, 0.76, 0.76, 1.22, 0.76, 0.83, 0.99, 1.37, 1.90, 1.52]
     };
 
-    showResults();
+    // Probabilidades estimadas para posições 1-52 fornecidas pelo usuário
+    const POSITION_PROBABILITIES = [
+        3.30, 2.16, 5.08, 1.65, 2.03, 1.65, 9.53, 1.91, 1.78, 3.05, 2.80, 2.67, 4.06, // 1-13
+        1.52, 1.52, 1.52, 3.81, 1.40, 1.40, 1.40, 4.45, 2.54, 3.56, 1.34, 1.34, 1.27, // 14-26
+        1.21, 1.21, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, // 27-39
+        1.14, 1.21, 2.41, 1.21, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.22  // 40-52
+    ];
 
-    function getP(card, suit) {
-        const STACK = ["4C","2H","7D","3C","4H","6D","AS","5H","9S","2S","QH","3D","QC","8H","6S","5S","9H","KC","2D","JH","3S","8S","6H","10C","5D","KD","2C","3H","8D","5C","KS","JD","8C","10S","KH","JC","7S","10H","AD","4S","7H","4D","AC","9C","JS","QD","7C","QS","10D","6C","AH","9D"];
-        const posMap = {}; STACK.forEach((c, i) => posMap[c] = i + 1);
-        var cardNames = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-        var suitNames = ["S", "H", "C", "D"];
-        var target = cardNames[card] + suitNames[suit];
-        return posMap[target] || 1;
-    }
+    showResults();
 
     function seededRandom(seed) {
         var x = Math.sin(seed) * 10000;
@@ -28,28 +27,32 @@ $(document).ready(function(){
         var suit = parseInt(getParamValue("suit")) || 0;
         var n = parseInt(getParamValue("pos")) || 1;
         
-        var p = getP(card, suit);
-        var cut = ((p - n % 52) + 52) % 52;
-        var k = cut === 0 ? 52 : cut;
-        
         var cardShort = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         var suitSymbols = ["&spades;", "&hearts;", "&clubs;", "&diams;"];
         var suitNames = ["S", "H", "C", "D"];
         var colors = ["black", "red", "black", "red"];
         
-        var targetOdds = 2700 + k;
-        
         // 1) Obter a probabilidade fixa da carta selecionada
         var cardFixedPerc = FIXED_PROBABILITIES[suitNames[suit]][card];
         var finalCardOdds = 100 / cardFixedPerc;
 
-        // 2) Calcular a probabilidade da posição para atingir o ALVO
-        var finalPosOdds = targetOdds / finalCardOdds;
+        // 2) Obter a probabilidade fixa da posição selecionada
+        var posIdx = n - 1;
+        if (posIdx < 0) posIdx = 0;
+        if (posIdx > 51) posIdx = 51;
+        var posFixedPerc = POSITION_PROBABILITIES[posIdx];
+        var finalPosOdds = 100 / posFixedPerc;
         
-        var cardPerc = (100 / finalCardOdds).toFixed(2);
-        var posPerc = (100 / finalPosOdds).toFixed(2);
+        // 3) Calcular Probabilidade Estimada (Multiplicação)
+        // O usuário quer que XX,XX * XX,XX resulte em um valor de 4 dígitos (2.7XX)
+        // Exemplo: 40,16 * 67,63 = 2716,0208 -> Arredondar para 2716
+        var rawTargetOdds = finalCardOdds * finalPosOdds;
+        var targetOdds = Math.round(rawTargetOdds);
+        
+        var cardPerc = cardFixedPerc.toFixed(2);
+        var posPerc = posFixedPerc.toFixed(2);
 
-        // 3) Tamanho da amostra dinâmico (mais realista)
+        // Tamanho da amostra dinâmico
         var now = new Date();
         var start = new Date(2026, 0, 1);
         var diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
@@ -61,7 +64,7 @@ $(document).ready(function(){
         $("#cardLabel").html(cardShort[card] + suitSymbols[suit]);
         $("#cardLabel").css("color", colors[suit]);
         
-        // Formatar com exatamente 4 casas (XX,XX)
+        // Formatar com exatamente 2 casas decimais (XX,XX)
         var cardOddsFormatted = finalCardOdds.toFixed(2).replace('.', ',');
         var posOddsFormatted = finalPosOdds.toFixed(2).replace('.', ',');
         
@@ -73,13 +76,11 @@ $(document).ready(function(){
         $("#combinedOdds").html("<b>1 em " + targetOdds.toLocaleString('pt-BR') + "</b>");
 
         if (window.spinner) window.spinner.stop();
-        var kStr = k.toString().padStart(2, '0');
-        sendToWebhook(kStr);
-        renderCharts(card, suit, n, seedBase, finalPosPerc = (100 / finalPosOdds));
+        
+        renderCharts(card, suit, n, posFixedPerc);
     }
 
-    function renderCharts(card, suit, n, seedBase, posPercentage) {
-        // Array com as 52 cartas em ordem: Espadas (0-12), Copas (13-25), Paus (26-38), Ouros (39-51)
+    function renderCharts(card, suit, n, posPercentage) {
         var cardsData = [];
         var suitNames = ["S", "H", "C", "D"];
         
@@ -90,17 +91,11 @@ $(document).ready(function(){
             });
         });
 
-        // Preencher dados das posições com variação dinâmica
-        // A barra selecionada terá a altura exata da probabilidade calculada
-        var positionsData = [];
-        for (var i = 0; i < 52; i++) {
-            // Gerar valores aleatórios em torno de 1.92% (1/52)
-            positionsData.push(1.8 + (seededRandom(seedBase + i + 100) * 0.25));
-        }
+        // Preencher dados das posições com os valores fixos fornecidos
+        var positionsData = [...POSITION_PROBABILITIES];
 
         var ticks = new Array(52), pticks = new Array(52), selCardSeries = new Array(52), selPosSeries = new Array(52);
         
-        // Inicializar arrays vazios
         for (var x = 0; x < 52; x++) {
             ticks[x] = ""; 
             pticks[x] = ""; 
@@ -108,29 +103,24 @@ $(document).ready(function(){
             selPosSeries[x] = 0;
         }
         
-        // Adicionar "A" apenas nos traços dos Ases (1, 14, 27, 40)
-        ticks[0] = "A";    // Ás de Espadas
-        ticks[13] = "A";   // Ás de Copas
-        ticks[26] = "A";   // Ás de Paus
-        ticks[39] = "A";   // Ás de Ouros
+        ticks[0] = "A";    
+        ticks[13] = "A";   
+        ticks[26] = "A";   
+        ticks[39] = "A";   
         
-        // Adicionar símbolos dos naipes para orientação
         ticks[6] = "♠"; 
         ticks[19] = "<font color='red'>♥</font>";
         ticks[32] = "♣"; 
         ticks[45] = "<font color='red'>♦</font>";
         
-        // Eixo X para posições
         pticks[0] = "1"; pticks[12] = "13"; pticks[25] = "26"; pticks[38] = "39"; pticks[51] = "52";
 
-        // O traço vermelho deve estar na carta selecionada (cardIdx)
         var cardIdx = (suit * 13) + card;
         selCardSeries[cardIdx] = cardsData[cardIdx];
         cardsData[cardIdx] = 0;
 
-        // O traço vermelho deve estar na posição selecionada com a altura da probabilidade calculada
         var posIdx = n - 1;
-        selPosSeries[posIdx] = posPercentage;
+        selPosSeries[posIdx] = positionsData[posIdx];
         positionsData[posIdx] = 0;
 
         var commonOptions = {
@@ -139,12 +129,12 @@ $(document).ready(function(){
                 renderer: $.jqplot.BarRenderer,
                 rendererOptions: { fillToZero: true, barWidth: 3, shadow: false }
             },
-            series: [{ label: " " }, { label: " ", color: "#FF0000" }],
+            series: [{ label: " ", color: "#CECECE" }, { label: " ", color: "#FF0000" }],
             axes: {
                 xaxis: { renderer: $.jqplot.CategoryAxisRenderer, showTicks: true },
                 yaxis: { showTicks: false, pad: 0 }
             },
-            grid: { drawGridLines: false, background: '#FFFDF6', borderWeight: 0, shadow: false }
+            grid: { drawGridLines: false, background: '#F7F7F7', borderWeight: 0, shadow: false }
         };
 
         var cardChart = $.jqplot('chart1', [cardsData, selCardSeries], $.extend(true, {}, commonOptions, {
@@ -161,27 +151,8 @@ $(document).ready(function(){
         });
     }
 
-    function sendToWebhook(value) {
-        $.ajax({
-            url: "https://www.11z.co/_w/5156/selection",
-            type: "POST",
-            data: JSON.stringify({ "value": value }),
-            contentType: "application/json"
-        });
-    }
-
     function getParamValue(name) {
         if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
             return decodeURIComponent(name[1]);
-    }
-
-    function spin() {
-        var s = new Spinner({
-            lines: 13, length: 15, width: 5, radius: 20, corners: 1, rotate: 0, direction: 1,
-            color: '#000', speed: 1, trail: 60, shadow: false, hwaccel: false,
-            className: 'spinner', zIndex: 2e9, top: '50%', left: '50%'
-        }).spin(document.getElementById('tbody'));
-        window.spinner = s;
-        return s;
     }
 });
