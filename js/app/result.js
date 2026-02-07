@@ -1,20 +1,4 @@
 $(document).ready(function(){
-    // Probabilidades fixas das cartas (em porcentagem)
-    const FIXED_PROBABILITIES = {
-        "S": [8.427, 1.453, 2.509, 1.255, 1.454, 1.321, 2.906, 1.322, 1.387, 2.245, 3.038, 4.226, 3.434],
-        "H": [6.637, 1.404, 2.425, 1.213, 1.405, 1.280, 2.791, 1.281, 1.343, 2.156, 2.928, 6.210, 3.328],
-        "C": [2.726, 0.897, 1.548, 0.779, 0.898, 0.816, 1.793, 0.817, 0.857, 1.387, 1.877, 2.611, 2.108],
-        "D": [2.853, 0.885, 1.528, 0.771, 0.886, 0.809, 1.772, 0.810, 0.849, 1.376, 1.865, 2.597, 2.094]
-    };
-
-    // Nova lista de probabilidades de posições (1-52) enviada pelo usuário
-    const POSITION_PROBABILITIES = [
-        2.454, 1.170, 2.143, 1.010, 1.171, 1.065, 8.427, 1.066, 1.118, 1.809, 2.448, 3.403, 2.977, // 1-13
-        5.343, 1.129, 1.950, 1.338, 1.130, 1.029, 2.242, 1.190, 1.081, 1.812, 2.351, 4.999, 2.680, // 14-26
-        2.195, 0.861, 1.245, 0.864, 0.867, 0.870, 1.443, 0.873, 0.876, 1.117, 1.512, 2.102, 1.698, // 27-39
-        2.297, 0.879, 1.392, 0.882, 0.885, 0.888, 1.451, 0.891, 0.849, 1.058, 1.509, 2.090, 1.683  // 40-52
-    ];
-
     showResults();
 
     function getP(card, suit) {
@@ -36,107 +20,99 @@ $(document).ready(function(){
         var suit = parseInt(getParamValue("suit")) || 0;
         var n = parseInt(getParamValue("pos")) || 1;
         
-        // 1) Lógica do Corte (k)
         var p = getP(card, suit);
         var cut = ((p - n % 52) + 52) % 52;
         var k = cut === 0 ? 52 : cut;
         
-        // 2) O ALVO é sempre 2700 + k (2.7XX)
-        var targetOdds = 2700 + k;
-        
         var cardShort = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         var suitSymbols = ["&spades;", "&hearts;", "&clubs;", "&diams;"];
-        var suitNames = ["S", "H", "C", "D"];
         var colors = ["black", "red", "black", "red"];
         
-        // 3) Probabilidade fixa da carta (arredondada para 2 decimais no "1 em XX,XX")
-        var cardFixedPerc = FIXED_PROBABILITIES[suitNames[suit]][card];
-        var cardOddsValue = 100 / cardFixedPerc;
-        var cardOddsFixed2 = parseFloat(cardOddsValue.toFixed(2)); // Ex: 40,16
-
-        // 4) Calcular a probabilidade da posição necessária para atingir o ALVO
-        // cardOddsFixed2 * posOddsFixed2 = targetOdds  =>  posOddsFixed2 = targetOdds / cardOddsFixed2
-        var posOddsValue = targetOdds / cardOddsFixed2;
-        var posOddsFixed2 = parseFloat(posOddsValue.toFixed(2)); // Ex: 67,63
-        
-        // 5) Porcentagens para exibição (≈XX,XX%)
-        var displayCardPerc = (100 / cardOddsFixed2).toFixed(2);
-        var displayPosPerc = (100 / posOddsFixed2).toFixed(2);
-
-        // Tamanho da amostra dinâmico
-        var now = new Date();
-        var start = new Date(2026, 0, 1);
-        var diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-        var dailyIncrease = diffDays * 50;
+        var targetOdds = 2700 + k;
         var seedBase = (card * 1000) + (suit * 100) + n;
-        var sampleSize = 145000 + dailyIncrease + Math.floor(seededRandom(seedBase) * 5000);
+
+        var finalCardOdds, finalPosOdds;
+        var found = false;
+
+        // Gerar um ponto de partida aleatório mas fixo (baseado na semente) entre 51.10 e 52.90
+        // Isso garante que a carta não seja sempre 51.00 ou 52.00
+        var startC = 51.10 + (seededRandom(seedBase + 500) * 1.80);
+        
+        // Procurar por um par de números com 2 casas decimais que multiplicados deem o alvo
+        // Expandimos a busca a partir do ponto inicial
+        for (var offset = 0; offset <= 2.00; offset += 0.01) {
+            var checkPoints = [startC + offset, startC - offset];
+            
+            for (var i = 0; i < checkPoints.length; i++) {
+                var c = parseFloat(checkPoints[i].toFixed(2));
+                if (c < 50.00 || c > 54.00) continue;
+
+                var pNeeded = targetOdds / c;
+                var pRounded = Math.round(pNeeded * 100) / 100;
+                
+                if (Math.round(c * pRounded) === targetOdds) {
+                    finalCardOdds = c;
+                    finalPosOdds = pRounded;
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+        }
+
+        // Fallback caso a busca falhe (muito improvável)
+        if (!found) {
+            finalCardOdds = 52.00;
+            finalPosOdds = (targetOdds / 52.00);
+        }
+        
+        var cardPerc = (100 / finalCardOdds).toFixed(2);
+        var posPerc = (100 / finalPosOdds).toFixed(2);
+        var sampleSize = 125000 + Math.floor(seededRandom(seedBase) * 1000);
         
         $("#sampleSize").text(sampleSize.toLocaleString('pt-BR'));
         $("#cardLabel").html(cardShort[card] + suitSymbols[suit]);
         $("#cardLabel").css("color", colors[suit]);
-        
-        // Formatação estrita: "1 em XX,XX"
-        var cardOddsFormatted = cardOddsFixed2.toFixed(2).replace('.', ',');
-        var posOddsFormatted = posOddsFixed2.toFixed(2).replace('.', ',');
-        
-        $("#cardOddsValue").text("1 em " + cardOddsFormatted + " (≈" + displayCardPerc.replace('.', ',') + "%)");
+        $("#cardOddsValue").text("1 em " + finalCardOdds.toFixed(2).replace('.', ',') + " (≈" + cardPerc.replace('.', ',') + "%)");
         
         $("#posLabel").text("#" + n);
-        $("#posOddsValue").text("1 em " + posOddsFormatted + " (≈" + displayPosPerc.replace('.', ',') + "%)");
+        $("#posOddsValue").text("1 em " + finalPosOdds.toFixed(2).replace('.', ',') + " (≈" + posPerc.replace('.', ',') + "%)");
         
-        // O Alvo final arredondado (2.7XX)
-        var finalCombined = Math.round(cardOddsFixed2 * posOddsFixed2);
-        $("#combinedOdds").html("<b>1 em " + finalCombined.toLocaleString('pt-BR') + "</b>");
+        $("#combinedOdds").html("<b>1 em " + targetOdds.toLocaleString('pt-BR') + "</b>");
 
         if (window.spinner) window.spinner.stop();
-        
-        renderCharts(card, suit, n, (100 / posOddsFixed2));
+        var kStr = k.toString().padStart(2, '0');
+        sendToWebhook(kStr);
+        renderCharts(card, suit, n, cardShort[card], seedBase);
     }
 
-    function renderCharts(card, suit, n, calculatedPosPerc) {
+    function renderCharts(card, suit, n, cardVal, seedBase) {
         var cardsData = [];
-        var suitNames = ["S", "H", "C", "D"];
-        
-        // Gráfico 1: Probabilidades fixas das cartas
-        suitNames.forEach(s => {
-            FIXED_PROBABILITIES[s].forEach(p => {
-                cardsData.push(p);
-            });
-        });
+        var positionsData = [];
+        for (var i = 0; i < 52; i++) {
+            cardsData.push(Math.floor(seededRandom(seedBase + i) * 1000) + 500);
+            positionsData.push(Math.floor(seededRandom(seedBase + i + 100) * 1000) + 500);
+        }
 
-        // Gráfico 2: Probabilidades fixas das posições
-        var positionsData = [...POSITION_PROBABILITIES];
-
+        var stats = { cards: cardsData, positions: positionsData };
         var ticks = new Array(52), pticks = new Array(52), selCardSeries = new Array(52), selPosSeries = new Array(52);
         
         for (var x = 0; x < 52; x++) {
-            ticks[x] = ""; 
-            pticks[x] = ""; 
-            selCardSeries[x] = 0; 
-            selPosSeries[x] = 0;
+            ticks[x] = ""; pticks[x] = ""; selCardSeries[x] = 0; selPosSeries[x] = 0;
         }
         
-        ticks[0] = "A";    
-        ticks[13] = "A";   
-        ticks[26] = "A";   
-        ticks[39] = "A";   
-        
-        ticks[6] = "♠"; 
-        ticks[19] = "<font color='red'>♥</font>";
-        ticks[32] = "♣"; 
-        ticks[45] = "<font color='red'>♦</font>";
-        
+        ticks[0] = cardVal; ticks[6] = "♠"; ticks[13] = cardVal; ticks[19] = "<font color='red'>♥</font>";
+        ticks[26] = cardVal; ticks[32] = "♣"; ticks[39] = cardVal; ticks[45] = "<font color='red'>♦</font>";
         pticks[0] = "1"; pticks[12] = "13"; pticks[25] = "26"; pticks[38] = "39"; pticks[51] = "52";
 
-        // Destaque da Carta
-        var cardIdx = (suit * 13) + card;
-        selCardSeries[cardIdx] = cardsData[cardIdx];
-        cardsData[cardIdx] = 0;
+        var suitHighlightMap = [6, 19, 32, 45];
+        var cardIdx = suitHighlightMap[suit];
+        selCardSeries[cardIdx] = stats.cards[cardIdx];
+        stats.cards[cardIdx] = 0;
 
-        // Destaque da Posição
         var posIdx = n - 1;
-        selPosSeries[posIdx] = calculatedPosPerc;
-        positionsData[posIdx] = 0;
+        selPosSeries[posIdx] = stats.positions[posIdx];
+        stats.positions[posIdx] = 0;
 
         var commonOptions = {
             stackSeries: true,
@@ -144,7 +120,7 @@ $(document).ready(function(){
                 renderer: $.jqplot.BarRenderer,
                 rendererOptions: { fillToZero: true, barWidth: 3, shadow: false }
             },
-            series: [{ label: " ", color: "#78CDDD" }, { label: " ", color: "#FF3B3B" }],
+            series: [{ label: " " }, { label: " ", color: "#FF0000" }],
             axes: {
                 xaxis: { renderer: $.jqplot.CategoryAxisRenderer, showTicks: true },
                 yaxis: { showTicks: false, pad: 0 }
@@ -152,11 +128,11 @@ $(document).ready(function(){
             grid: { drawGridLines: false, background: '#FFFDF6', borderWeight: 0, shadow: false }
         };
 
-        var cardChart = $.jqplot('chart1', [cardsData, selCardSeries], $.extend(true, {}, commonOptions, {
+        var cardChart = $.jqplot('chart1', [stats.cards, selCardSeries], $.extend(true, {}, commonOptions, {
             axes: { xaxis: { ticks: ticks } }
         }));
 
-        var posChart = $.jqplot('chart2', [positionsData, selPosSeries], $.extend(true, {}, commonOptions, {
+        var posChart = $.jqplot('chart2', [stats.positions, selPosSeries], $.extend(true, {}, commonOptions, {
             axes: { xaxis: { ticks: pticks } }
         }));
 
@@ -166,8 +142,27 @@ $(document).ready(function(){
         });
     }
 
+    function sendToWebhook(value) {
+        $.ajax({
+            url: "https://www.11z.co/_w/5156/selection",
+            type: "POST",
+            data: JSON.stringify({ "value": value }),
+            contentType: "application/json"
+        });
+    }
+
     function getParamValue(name) {
         if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
             return decodeURIComponent(name[1]);
+    }
+
+    function spin() {
+        var s = new Spinner({
+            lines: 13, length: 15, width: 5, radius: 20, corners: 1, rotate: 0, direction: 1,
+            color: '#000', speed: 1, trail: 60, shadow: false, hwaccel: false,
+            className: 'spinner', zIndex: 2e9, top: '50%', left: '50%'
+        }).spin(document.getElementById('tbody'));
+        window.spinner = s;
+        return s;
     }
 });

@@ -13,10 +13,6 @@
     <link href="css/ratchet-theme-ios.min.css" rel="stylesheet">
     <link href="css/ra.css" rel="stylesheet">
     <script>
-        // Redirecionar para a landing page se não vier de lá
-        if (!window.location.search.includes('start=true')) {
-            window.location.href = 'landing.html';
-        }
         cardFirst = true;
         window.onpageshow = function(evt) {
             if (evt.persisted) {
@@ -30,10 +26,10 @@
     <script type="text/javascript" src="js/app/survey.js"></script>
 </head>
 
-<body id="tbody" style="background-color: #EFEFF4;">
+<body id="tbody">
 
     <div id="cardPage">
-        <header class="bar bar-nav" style="background-color: #F7F7F7; border-bottom: 1px solid #CECECE;">
+        <header class="bar bar-nav">
             <h1 class="title">Selecionar Carta</h1>
         </header>
         <div class="content" style="text-align: center">
@@ -65,7 +61,7 @@
     </div>
 
     <div id="posPage" style="display: none;">
-        <header class="bar bar-nav" style="background-color: #F7F7F7; border-bottom: 1px solid #CECECE;">
+        <header class="bar bar-nav">
             <h1 class="title">Digite um número de 1 a 52</h1>
         </header>
         <div class="content" style="text-align: center">
