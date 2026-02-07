@@ -303,24 +303,25 @@ footer {
     filter: brightness(1.1);
 }
 
-/* --- CHART 1 SUIT OVERLAY --- */
-.suits-overlay {
+/* --- CHART 1 SUIT OVERLAY 
+    position: relative;
+}
+
+/* Overlay horizontal com 4 colunas iguais */
+#chart1-wrapper .suits-overlay {
     position: absolute;
-    bottom: 28px; /* <--- AJUSTE AQUI PARA SUBIR/DESCER A FAIXA */
     left: 0;
     width: 100%;
-    height: 30px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    place-items: center;
-    pointer-events: none; /* Permite clicar no gráfico através dos naipes */
-    z-index: 20;
-}
-
-.suit-col {
-    font-size: 2rem;
+grid-template-columns: repeat(4, 1fr);
+    place-items
+    pointer-events: none;
+    bottom: 22px; /* <--- AJUSTE AQUI PARA SUBIR/DESCER A FAIXA */
+}ímbolos */
+#chart1-wrapper .suit {
+    font-size: 22px;
     line-height: 1;
-    font-weight: bold;
-}
+}pper .spade,
+b { color: #111; }
 
-.suit-col.text-dark-suit { color: #000000; } /* Preto conforme solicitado */
+#chart1-wrapper .heart,
+#chart1-wrapper .diamond { color: #d22; }

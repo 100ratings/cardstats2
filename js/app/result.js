@@ -135,12 +135,12 @@ $(document).ready(function(){
         var $c1 = $('#chart1');
         if ($c1.length > 0 && $c1.parent().attr('id') !== 'chart1-wrapper') {
             $c1.wrap('<div id="chart1-wrapper" style="position:relative;"></div>');
-            $('<div class="suits-overlay">' +
-              '<div class="suit-col text-dark-suit">♠</div>' +
-              '<div class="suit-col text-red">♥</div>' +
-              '<div class="suit-col text-dark-suit">♣</div>' +
-              '<div class="suit-col text-red">♦</div>' +
-              '</div>').insertAfter($c1);
+            $('<div class="suits-overlay" aria-hidden="true">' +
+              '<span class="suit spade">♠</span>' +
+              '<span class="suit heart">♥</span>' +
+              '<span class="suit club">♣</span>' +
+              '<span class="suit diamond">♦</span>' +
+              '</div>').appendTo('#chart1-wrapper');
         }
 
         var posChart = $.jqplot('chart2', [stats.positions, selPosSeries], $.extend(true, {}, commonOptions, {
