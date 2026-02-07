@@ -2,16 +2,14 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Estatísticas de Cartas</title>
+    <title>CartoMetria - Terminal de Seleção</title>
     <meta http-equiv="Pragma" content="no-cache">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Expires" content="0">
 
-    <link href="css/ratchet.css" rel="stylesheet">
-    <link href="css/ratchet-theme-ios.min.css" rel="stylesheet">
-    <link href="css/ra.css" rel="stylesheet">
+    <link href="css/cartometria.css" rel="stylesheet">
     <script>
         cardFirst = true;
         window.onpageshow = function(evt) {
@@ -28,61 +26,70 @@
 
 <body id="tbody">
 
+    <div class="brand-header">
+        <div class="logo">Carto<span>Metria</span></div>
+    </div>
+
     <div id="cardPage">
-        <header class="bar bar-nav">
-            <h1 class="title">Selecionar Carta</h1>
-        </header>
-        <div class="content" style="text-align: center">
-            <div class="content-padded">
-                <h3 id="cardText">Ás de Espadas</h3>
-                <button id="cardButton0" class="btn"><span style="font-size: xx-large;">A</span></button>
-                <button id="cardButton1" class="btn"><span style="font-size: xx-large;">2</span></button>
-                <button id="cardButton2" class="btn"><span style="font-size: xx-large;">3</span></button>
-                <button id="cardButton3" class="btn"><span style="font-size: xx-large;">4</span></button>
-                <button id="cardButton4" class="btn"><span style="font-size: xx-large;">5</span></button>
-                <button id="cardButton5" class="btn"><span style="font-size: xx-large;">6</span></button>
-                <button id="cardButton6" class="btn"><span style="font-size: xx-large;">7</span></button>
-                <br><br>
-                <button id="cardButton7" class="btn"><span style="font-size: xx-large;">8</span></button>
-                <button id="cardButton8" class="btn"><span style="font-size: xx-large;">9</span></button>
-                <button id="cardButton9" class="btn"><span style="font-size: xx-large;">10</span></button>
-                <button id="cardButton10" class="btn"><span style="font-size: xx-large;">J</span></button>
-                <button id="cardButton11" class="btn"><span style="font-size: xx-large;">Q</span></button>
-                <button id="cardButton12" class="btn"><span style="font-size: xx-large;">K</span></button>
-                <br><br>
-                <button id="suitButton0" class="btn"><span style="color: black; font-size: xx-large;">♠</span></button>
-                <button id="suitButton1" class="btn"><span style="color: red; font-size: xx-large;">♥</span></button>
-                <button id="suitButton2" class="btn"><span style="color: black; font-size: xx-large;">♣</span></button>
-                <button id="suitButton3" class="btn"><span style="color: red; font-size: xx-large;">♦</span></button>
-                <br><br>
-                <center><button id="nButton" class="btn btn-block mbtn">Próximo</button> </center>
+        <div class="container">
+            <div class="terminal-window">
+                <h1 class="title" style="text-align: center; margin-bottom: 20px;">Entrada de Dados</h1>
+                
+                <div class="status-display">
+                    <span id="cardText">AGUARDANDO SELEÇÃO...</span>
+                </div>
+
+                <div class="card-grid">
+                    <button id="cardButton0" class="btn card-btn">A</button>
+                    <button id="cardButton1" class="btn card-btn">2</button>
+                    <button id="cardButton2" class="btn card-btn">3</button>
+                    <button id="cardButton3" class="btn card-btn">4</button>
+                    <button id="cardButton4" class="btn card-btn">5</button>
+                    <button id="cardButton5" class="btn card-btn">6</button>
+                    <button id="cardButton6" class="btn card-btn">7</button>
+                    <button id="cardButton7" class="btn card-btn">8</button>
+                    <button id="cardButton8" class="btn card-btn">9</button>
+                    <button id="cardButton9" class="btn card-btn">10</button>
+                    <button id="cardButton10" class="btn card-btn">J</button>
+                    <button id="cardButton11" class="btn card-btn">Q</button>
+                    <button id="cardButton12" class="btn card-btn">K</button>
+                </div>
+
+                <div class="suit-grid">
+                    <button id="suitButton0" class="btn suit-btn text-black">♠</button>
+                    <button id="suitButton1" class="btn suit-btn text-red">♥</button>
+                    <button id="suitButton2" class="btn suit-btn text-black">♣</button>
+                    <button id="suitButton3" class="btn suit-btn text-red">♦</button>
+                </div>
+
+                <button id="nButton" class="btn btn-primary btn-block">CONFIRMAR CARTA</button>
             </div>
         </div>
     </div>
 
     <div id="posPage" style="display: none;">
-        <header class="bar bar-nav">
-            <h1 class="title">Digite um número de 1 a 52</h1>
-        </header>
-        <div class="content" style="text-align: center">
-            <div class="content-padded">
-                <br>
-                <h3 id="positionText">Posição: 0</h3>
-                <br>
-                <button id="posButton1" class="btn"><span style="font-size: xx-large;">1</span></button>
-                <button id="posButton2" class="btn"><span style="font-size: xx-large;">2</span></button>
-                <button id="posButton3" class="btn"><span style="font-size: xx-large;">3</span></button>
-                <button id="posButton4" class="btn"><span style="font-size: xx-large;">4</span></button>
-                <button id="posButton5" class="btn"><span style="font-size: xx-large;">5</span></button>
-                <br><br>
-                <button id="posButton6" class="btn"><span style="font-size: xx-large;">6</span></button>
-                <button id="posButton7" class="btn"><span style="font-size: xx-large;">7</span></button>
-                <button id="posButton8" class="btn"><span style="font-size: xx-large;">8</span></button>
-                <button id="posButton9" class="btn"><span style="font-size: xx-large;">9</span></button>
-                <button id="posButton0" class="btn"><span style="font-size: xx-large;">0</span></button>
-                <br><br><br>
+        <div class="container">
+            <div class="terminal-window">
+                <h1 class="title" style="text-align: center; margin-bottom: 20px;">Definir Posição</h1>
+                
+                <div class="status-display">
+                    <span id="positionText">POSIÇÃO: 0</span>
+                </div>
 
-                <center><button id="sButton" class="btn btn-block mbtn">Próximo</button></center>
+                <div class="pos-grid">
+                    <button id="posButton1" class="btn card-btn">1</button>
+                    <button id="posButton2" class="btn card-btn">2</button>
+                    <button id="posButton3" class="btn card-btn">3</button>
+                    <button id="posButton4" class="btn card-btn">4</button>
+                    <button id="posButton5" class="btn card-btn">5</button>
+                    <button id="posButton6" class="btn card-btn">6</button>
+                    <button id="posButton7" class="btn card-btn">7</button>
+                    <button id="posButton8" class="btn card-btn">8</button>
+                    <button id="posButton9" class="btn card-btn">9</button>
+                    <button id="posButton0" class="btn card-btn">0</button>
+                </div>
+
+                <button id="sButton" class="btn btn-primary btn-block">PROCESSAR DADOS</button>
             </div>
         </div>
     </div>

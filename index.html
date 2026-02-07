@@ -3,61 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Card Stats - Blackjack</title>
-    <style>
-        body {
-            background-color: #CECECE;
-            color: #000000;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-        }
-        .container {
-            padding: 20px;
-            max-width: 600px;
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            color: #000000;
-        }
-        p {
-            font-size: 1.3em;
-            color: #929292;
-            margin-bottom: 50px;
-            line-height: 1.5;
-            font-weight: 500;
-        }
-        .btn {
-            background-color: #78CDDD;
-            color: #000000;
-            border: none;
-            padding: 20px 50px;
-            font-size: 1.2em;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.1s ease;
-        }
-        .btn:active {
-            transform: scale(0.98);
-        }
-    </style>
+    <title>CartoMetria - Análise de Blackjack</title>
+    <link href="css/cartometria.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Card Stats 21</h1>
-        <p>Esse site é direcionado para jogadores profissionais e amadores, para tentar determinar estatísticas de cartas para Black Jack (21).</p>
-        <a href="selection.html" class="btn">ENTRAR</a>
+    
+    <div class="brand-header">
+        <div class="logo">Carto<span>Metria</span></div>
     </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Domine o Blackjack com Dados</h1>
+            <p>Plataforma profissional de inteligência estatística para jogadores de elite. Calcule probabilidades, analise tendências e tome decisões baseadas em métricas reais.</p>
+            <a href="selection.html" class="btn btn-primary">INICIAR ANÁLISE</a>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>Probabilidade em Tempo Real</h3>
+                <p>Algoritmos avançados que calculam a próxima carta com base no histórico da mesa.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Mapeamento de Posição</h3>
+                <p>Análise detalhada da distribuição de cartas por posição no baralho.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Interface Profissional</h3>
+                <p>Design otimizado para input rápido e leitura clara de dados complexos.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2023 CartoMetria Analytics. Todos os direitos reservados.
+    </footer>
 </body>
 </html>

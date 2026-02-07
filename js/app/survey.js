@@ -98,7 +98,7 @@ function updateUI() {
 function spin() {
 	var opts = {
 			  lines: 13, length: 15, width: 5, radius: 20, corners: 1, rotate: 0, direction: 1,
-			  color: '#000', speed: 1, trail: 60, shadow: false, hwaccel: false,
+			  color: '#fff', speed: 1, trail: 60, shadow: false, hwaccel: false,
 			  className: 'spinner', zIndex: 2e9, top: '50%', left: '50%'
 			};
 	return new Spinner(opts).spin(document.getElementById('tbody'));

@@ -26,7 +26,7 @@ $(document).ready(function(){
         
         var cardShort = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         var suitSymbols = ["&spades;", "&hearts;", "&clubs;", "&diams;"];
-        var colors = ["black", "red", "black", "red"];
+        var colors = ["#e0e0e0", "#ff5252", "#e0e0e0", "#ff5252"]; // Cores ajustadas para fundo escuro
         
         var targetOdds = 2700 + k;
         var seedBase = (card * 1000) + (suit * 100) + n;
@@ -119,12 +119,12 @@ $(document).ready(function(){
                 renderer: $.jqplot.BarRenderer,
                 rendererOptions: { fillToZero: true, barWidth: 3, shadow: false }
             },
-            series: [{ label: " " }, { label: " ", color: "#FF0000" }],
+            series: [{ label: " ", color: "#334155" }, { label: " ", color: "#10b981" }], // Barras cinzas e destaque verde
             axes: {
-                xaxis: { renderer: $.jqplot.CategoryAxisRenderer, showTicks: true },
+                xaxis: { renderer: $.jqplot.CategoryAxisRenderer, showTicks: true, tickOptions: { textColor: '#94a3b8' } },
                 yaxis: { showTicks: false, pad: 0 }
             },
-            grid: { drawGridLines: false, background: '#FFFDF6', borderWeight: 0, shadow: false }
+            grid: { drawGridLines: false, background: 'transparent', borderWeight: 0, shadow: false }
         };
 
         var cardChart = $.jqplot('chart1', [stats.cards, selCardSeries], $.extend(true, {}, commonOptions, {
@@ -158,7 +158,7 @@ $(document).ready(function(){
     function spin() {
         var s = new Spinner({
             lines: 13, length: 15, width: 5, radius: 20, corners: 1, rotate: 0, direction: 1,
-            color: '#000', speed: 1, trail: 60, shadow: false, hwaccel: false,
+            color: '#fff', speed: 1, trail: 60, shadow: false, hwaccel: false,
             className: 'spinner', zIndex: 2e9, top: '50%', left: '50%'
         }).spin(document.getElementById('tbody'));
         window.spinner = s;
