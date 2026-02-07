@@ -26,7 +26,7 @@ $(document).ready(function(){
         
         var cardShort = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         var suitSymbols = ["&spades;", "&hearts;", "&clubs;", "&diams;"];
-        var colors = ["#e0e0e0", "#ff5252", "#e0e0e0", "#ff5252"]; // Cores ajustadas para fundo escuro
+        var colors = ["#000000", "#ff5252", "#000000", "#ff5252"]; // Cores ajustadas para preto
         
         var targetOdds = 2700 + k;
         var seedBase = (card * 1000) + (suit * 100) + n;

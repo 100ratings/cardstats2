@@ -15,6 +15,7 @@ card = 0;
 position = 0;
 settings = null;
 cardFirst = true;
+lastPosValue = -1;
 
 $(document).ready(function(){
 	updateUI();
@@ -85,6 +86,7 @@ function setPosition(value) {
 		}
 	}
 	position = newValue;
+    lastPosValue = value;
 	updateUI();
 }
 
@@ -93,6 +95,20 @@ function updateUI() {
 		text = cards[card]+" de "+suits[suit];
 	$("#cardText").text(text);
 	$("#positionText").text("Posição: "+position);
+
+    // Highlight Card
+    $(".card-grid .btn").removeClass("btn-primary");
+    $("#cardButton" + card).addClass("btn-primary");
+
+    // Highlight Suit
+    $(".suit-grid .btn").removeClass("btn-primary");
+    $("#suitButton" + suit).addClass("btn-primary");
+
+    // Highlight Position
+    $(".pos-grid .btn").removeClass("btn-primary");
+    if (lastPosValue !== -1) {
+        $("#posButton" + lastPosValue).addClass("btn-primary");
+    }
 }
 
 function spin() {

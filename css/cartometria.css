@@ -154,7 +154,11 @@ p {
 
 .suit-btn {
     font-size: 2rem;
-    padding: 10px 25px;
+    padding: 10px 0;
+    width: 60px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Status Display */
