@@ -18,6 +18,9 @@ cardFirst = true;
 lastPosValue = -1;
 
 $(document).ready(function(){
+	$(".title").html("Blackjack<br>com<br>Probabilidade");
+	$("head").append("<style>.title{line-height:14px;padding-top:2px;white-space:normal;font-size:12px;} h5{margin-top:5px;} .btn{font-weight:normal!important;}</style>");
+
 	updateUI();
 	$("#suitButton0").on("click touchstart", function(e) { setSuit(0); e.preventDefault(); });
 	$("#suitButton1").on("click touchstart", function(e) { setSuit(1); e.preventDefault(); });
@@ -97,17 +100,17 @@ function updateUI() {
 	$("#positionText").text("Posição: "+position);
 
     // Highlight Card
-    $(".card-grid .btn").removeClass("btn-primary");
-    $("#cardButton" + card).addClass("btn-primary");
+    $(".card-grid .btn").removeClass("btn-primary btn-positive");
+    $("#cardButton" + card).addClass("btn-positive");
 
     // Highlight Suit
-    $(".suit-grid .btn").removeClass("btn-primary");
-    $("#suitButton" + suit).addClass("btn-primary");
+    $(".suit-grid .btn").removeClass("btn-primary btn-positive");
+    $("#suitButton" + suit).addClass("btn-positive");
 
     // Highlight Position
-    $(".pos-grid .btn").removeClass("btn-primary");
+    $(".pos-grid .btn").removeClass("btn-primary btn-positive");
     if (lastPosValue !== -1) {
-        $("#posButton" + lastPosValue).addClass("btn-primary");
+        $("#posButton" + lastPosValue).addClass("btn-positive");
     }
 }
 
