@@ -7,12 +7,12 @@ $(document).ready(function(){
         "D": [2.853, 0.885, 1.528, 0.771, 0.886, 0.809, 1.772, 0.810, 0.849, 1.376, 1.865, 2.597, 2.094]
     };
 
-    // Nova lista de probabilidades de posições (1-52)
+    // Nova lista de probabilidades de posições (1-52) enviada pelo usuário
     const POSITION_PROBABILITIES = [
-        2.850, 2.090, 5.200, 1.790, 2.760, 1.750, 11.900, 2.390, 2.470, 2.680, 2.610, 2.540, 6.400, // 1-13
-        1.510, 1.880, 1.830, 3.700, 1.710, 1.670, 1.630, 4.800, 1.980, 3.450, 1.590, 2.330, 1.550, // 14-26
-        0.640, 0.620, 0.600, 2.270, 0.580, 0.560, 0.540, 0.520, 0.500, 0.485, 2.210, 0.450, 1.930, // 27-39
-        2.150, 0.435, 3.150, 0.420, 0.405, 0.390, 0.375, 0.360, 0.345, 0.335, 0.325, 0.315, 2.030  // 40-52
+        2.454, 1.170, 2.143, 1.010, 1.171, 1.065, 8.427, 1.066, 1.118, 1.809, 2.448, 3.403, 2.977, // 1-13
+        5.343, 1.129, 1.950, 1.338, 1.130, 1.029, 2.242, 1.190, 1.081, 1.812, 2.351, 4.999, 2.680, // 14-26
+        2.195, 0.861, 1.245, 0.864, 0.867, 0.870, 1.443, 0.873, 0.876, 1.117, 1.512, 2.102, 1.698, // 27-39
+        2.297, 0.879, 1.392, 0.882, 0.885, 0.888, 1.451, 0.891, 0.849, 1.058, 1.509, 2.090, 1.683  // 40-52
     ];
 
     showResults();
@@ -36,12 +36,12 @@ $(document).ready(function(){
         var suit = parseInt(getParamValue("suit")) || 0;
         var n = parseInt(getParamValue("pos")) || 1;
         
-        // Lógica do Corte (k)
+        // 1) Lógica do Corte (k)
         var p = getP(card, suit);
         var cut = ((p - n % 52) + 52) % 52;
         var k = cut === 0 ? 52 : cut;
         
-        // O ALVO é sempre 2700 + k (2.7XX)
+        // 2) O ALVO é sempre 2700 + k (2.7XX)
         var targetOdds = 2700 + k;
         
         var cardShort = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
@@ -49,14 +49,19 @@ $(document).ready(function(){
         var suitNames = ["S", "H", "C", "D"];
         var colors = ["black", "red", "black", "red"];
         
-        // 1) Obter a probabilidade fixa da carta selecionada
+        // 3) Probabilidade fixa da carta (arredondada para 2 decimais no "1 em XX,XX")
         var cardFixedPerc = FIXED_PROBABILITIES[suitNames[suit]][card];
-        var finalCardOdds = 100 / cardFixedPerc;
+        var cardOddsValue = 100 / cardFixedPerc;
+        var cardOddsFixed2 = parseFloat(cardOddsValue.toFixed(2)); // Ex: 40,16
 
-        // 2) Calcular a probabilidade da posição para atingir o ALVO
-        // finalCardOdds * finalPosOdds = targetOdds  =>  finalPosOdds = targetOdds / finalCardOdds
-        var finalPosOdds = targetOdds / finalCardOdds;
-        var posPerc = (100 / finalPosOdds);
+        // 4) Calcular a probabilidade da posição necessária para atingir o ALVO
+        // cardOddsFixed2 * posOddsFixed2 = targetOdds  =>  posOddsFixed2 = targetOdds / cardOddsFixed2
+        var posOddsValue = targetOdds / cardOddsFixed2;
+        var posOddsFixed2 = parseFloat(posOddsValue.toFixed(2)); // Ex: 67,63
+        
+        // 5) Porcentagens para exibição (≈XX,XX%)
+        var displayCardPerc = (100 / cardOddsFixed2).toFixed(2);
+        var displayPosPerc = (100 / posOddsFixed2).toFixed(2);
 
         // Tamanho da amostra dinâmico
         var now = new Date();
@@ -70,21 +75,22 @@ $(document).ready(function(){
         $("#cardLabel").html(cardShort[card] + suitSymbols[suit]);
         $("#cardLabel").css("color", colors[suit]);
         
-        // Formatar com exatamente 2 casas decimais (XX,XX)
-        var cardOddsFormatted = finalCardOdds.toFixed(2).replace('.', ',');
-        var posOddsFormatted = finalPosOdds.toFixed(2).replace('.', ',');
+        // Formatação estrita: "1 em XX,XX"
+        var cardOddsFormatted = cardOddsFixed2.toFixed(2).replace('.', ',');
+        var posOddsFormatted = posOddsFixed2.toFixed(2).replace('.', ',');
         
-        $("#cardOddsValue").text("1 em " + cardOddsFormatted + " (≈" + cardFixedPerc.toFixed(2).replace('.', ',') + "%)");
+        $("#cardOddsValue").text("1 em " + cardOddsFormatted + " (≈" + displayCardPerc.replace('.', ',') + "%)");
         
         $("#posLabel").text("#" + n);
-        $("#posOddsValue").text("1 em " + posOddsFormatted + " (≈" + posPerc.toFixed(2).replace('.', ',') + "%)");
+        $("#posOddsValue").text("1 em " + posOddsFormatted + " (≈" + displayPosPerc.replace('.', ',') + "%)");
         
-        // O Alvo exibido
-        $("#combinedOdds").html("<b>1 em " + targetOdds.toLocaleString('pt-BR') + "</b>");
+        // O Alvo final arredondado (2.7XX)
+        var finalCombined = Math.round(cardOddsFixed2 * posOddsFixed2);
+        $("#combinedOdds").html("<b>1 em " + finalCombined.toLocaleString('pt-BR') + "</b>");
 
         if (window.spinner) window.spinner.stop();
         
-        renderCharts(card, suit, n, posPerc);
+        renderCharts(card, suit, n, (100 / posOddsFixed2));
     }
 
     function renderCharts(card, suit, n, calculatedPosPerc) {
@@ -127,7 +133,7 @@ $(document).ready(function(){
         selCardSeries[cardIdx] = cardsData[cardIdx];
         cardsData[cardIdx] = 0;
 
-        // Destaque da Posição (usa o valor calculado para o gráfico)
+        // Destaque da Posição
         var posIdx = n - 1;
         selPosSeries[posIdx] = calculatedPosPerc;
         positionsData[posIdx] = 0;
