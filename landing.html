@@ -7,17 +7,26 @@
     <link href="css/ratchet.css" rel="stylesheet">
     <link href="css/ratchet-theme-ios.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             background-color: #FFFDF6;
             color: #333333;
             font-family: "Helvetica Neue", Helvetica, sans-serif;
-            margin: 0;
-            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .container {
+            flex: 1;
             padding: 20px;
             max-width: 600px;
             margin: 0 auto;
+            width: 100%;
+            overflow-y: auto;
         }
         header {
             text-align: center;
@@ -36,47 +45,56 @@
             margin-top: 5px;
         }
         .content {
-            line-height: 1.8;
+            line-height: 1.7;
             color: #444444;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .content p {
-            margin: 15px 0;
+            margin: 12px 0;
+            font-size: 14px;
             text-align: justify;
-            font-size: 15px;
         }
         .highlight {
             background-color: #f5f5f5;
-            padding: 15px;
+            padding: 12px;
             border-left: 4px solid #b22222;
-            margin: 20px 0;
+            margin: 15px 0;
             border-radius: 3px;
         }
         .highlight h3 {
-            margin-top: 0;
+            margin: 0 0 8px 0;
             color: #b22222;
-            font-size: 16px;
+            font-size: 15px;
         }
         .highlight ul {
-            margin: 10px 0;
-            padding-left: 20px;
+            margin: 8px 0;
+            padding-left: 18px;
         }
         .highlight li {
-            margin: 8px 0;
-            font-size: 14px;
+            margin: 5px 0;
+            font-size: 13px;
+        }
+        .button-wrapper {
+            padding: 20px;
+            background-color: #FFFDF6;
+            border-top: 2px solid #cccccc;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
         }
         .btn-poker {
             background-color: #b22222;
             border: none;
             color: white;
-            padding: 15px 30px;
-            font-size: 16px;
+            padding: 12px 25px;
+            font-size: 15px;
             border-radius: 5px;
             text-transform: uppercase;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            box-sizing: border-box;
+            max-width: 300px;
             box-shadow: 0 4px #8b0000;
             transition: all 0.2s;
         }
@@ -86,11 +104,9 @@
         }
         .footer {
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             color: #999999;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #cccccc;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -103,39 +119,34 @@
 
         <div class="content">
             <p>
-                Bem-vindo à plataforma de análise estatística de cartas, desenvolvida especificamente para jogadores profissionais de Poker e entusiastas de Blackjack (21). Esta ferramenta oferece uma análise detalhada e baseada em dados reais sobre a distribuição e probabilidade de cartas em diferentes cenários de jogo.
+                Bem-vindo à plataforma de análise estatística de cartas, desenvolvida para jogadores profissionais de Poker e Blackjack (21). Esta ferramenta oferece análise detalhada sobre a distribuição e probabilidade de cartas em diferentes cenários de jogo.
             </p>
 
             <p>
-                Nosso sistema coleta e analisa dados de milhares de jogadas para fornecer estatísticas precisas sobre como as cartas se distribuem quando cortadas em diferentes posições do baralho. Essas informações são fundamentais para jogadores que desejam otimizar suas estratégias e tomar decisões mais informadas durante o jogo.
+                Nosso sistema coleta dados de milhares de jogadas para fornecer estatísticas precisas sobre como as cartas se distribuem quando cortadas em diferentes posições do baralho. Essas informações são fundamentais para otimizar suas estratégias.
             </p>
 
             <div class="highlight">
                 <h3>Como Funciona</h3>
-                <p>
-                    O analisador funciona de forma simples e intuitiva:
-                </p>
                 <ul>
-                    <li><strong>Selecione uma carta:</strong> Escolha qualquer carta do baralho (de Ás a Rei, em qualquer naipe)</li>
-                    <li><strong>Indique a posição:</strong> Digite a posição onde você cortaria o baralho (de 1 a 52)</li>
-                    <li><strong>Receba os resultados:</strong> Obtenha as probabilidades precisas baseadas em nossa base de dados estatística</li>
+                    <li><strong>Selecione uma carta:</strong> Escolha qualquer carta do baralho (Ás a Rei)</li>
+                    <li><strong>Indique a posição:</strong> Digite onde você cortaria o baralho (1 a 52)</li>
+                    <li><strong>Receba os resultados:</strong> Obtenha as probabilidades precisas com gráficos visuais</li>
                 </ul>
             </div>
 
             <p>
-                Os dados apresentados nesta plataforma são resultado de análises contínuas e atualizações regulares, garantindo que você sempre tenha acesso às informações mais precisas e confiáveis. Cada resultado é acompanhado por gráficos visuais que facilitam a compreensão das distribuições de probabilidade.
+                Os dados são atualizados continuamente, garantindo informações precisas e confiáveis. Utilize esses dados para tomar decisões mais inteligentes e aumentar suas chances de sucesso.
             </p>
 
-            <p>
-                Seja você um jogador casual ou profissional, esta ferramenta é essencial para compreender melhor os padrões de distribuição de cartas e aprimorar sua estratégia de jogo. Utilize esses dados para tomar decisões mais inteligentes e aumentar suas chances de sucesso.
-            </p>
+            <div class="footer">
+                <p>Análise estatística baseada em dados coletados continuamente. Atualizado regularmente.</p>
+            </div>
         </div>
+    </div>
 
+    <div class="button-wrapper">
         <button class="btn-poker" onclick="window.location.href='index.html?start=true'">Acessar Analisador</button>
-
-        <div class="footer">
-            <p>Análise estatística baseada em dados coletados continuamente. Atualizado regularmente.</p>
-        </div>
     </div>
 </body>
 </html>
