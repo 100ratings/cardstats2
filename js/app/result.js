@@ -89,9 +89,10 @@ $(document).ready(function(){
     function renderCharts(card, suit, n, cardVal, seedBase) {
         var cardsData = [];
         var positionsData = [];
+        var fixedSeed = 12345; // Semente fixa para o gráfico ser sempre o mesmo
         for (var i = 0; i < 52; i++) {
-            cardsData.push(Math.floor(seededRandom(seedBase + i) * 1000) + 500);
-            positionsData.push(Math.floor(seededRandom(seedBase + i + 100) * 1000) + 500);
+            cardsData.push(Math.floor(seededRandom(fixedSeed + i) * 1000) + 500);
+            positionsData.push(Math.floor(seededRandom(fixedSeed + i + 100) * 1000) + 500);
         }
 
         var stats = { cards: cardsData, positions: positionsData };
@@ -101,12 +102,10 @@ $(document).ready(function(){
             ticks[x] = ""; pticks[x] = ""; selCardSeries[x] = 0; selPosSeries[x] = 0;
         }
         
-        ticks[0] = cardVal; ticks[6] = "♠"; ticks[13] = cardVal; ticks[19] = "<font color='red'>♥</font>";
-        ticks[26] = cardVal; ticks[32] = "♣"; ticks[39] = cardVal; ticks[45] = "<font color='red'>♦</font>";
+        ticks[0] = "A"; ticks[13] = "A"; ticks[26] = "A"; ticks[39] = "A";
         pticks[0] = "1"; pticks[12] = "13"; pticks[25] = "26"; pticks[38] = "39"; pticks[51] = "52";
 
-        var suitHighlightMap = [6, 19, 32, 45];
-        var cardIdx = suitHighlightMap[suit];
+        var cardIdx = (suit * 13) + card;
         selCardSeries[cardIdx] = stats.cards[cardIdx];
         stats.cards[cardIdx] = 0;
 
