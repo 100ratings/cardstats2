@@ -237,3 +237,68 @@ footer {
 
 /* Spinner Override */
 .spinner div div { background-color: #fff !important; }
+
+/* --- FIX FOR GRID BUTTONS (iOS Stability) --- */
+/* Garante geometria fixa para botões de grade (Cartas, Naipes, Posição) */
+.card-grid .btn,
+.suit-grid .btn,
+.pos-grid .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 0; /* Remove padding variável */
+    
+    /* iOS / Mobile Stability */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    outline: none;
+    transform: none !important; /* Remove efeito de pular */
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s; /* Apenas cor */
+}
+
+/* Tamanhos específicos */
+.card-grid .btn,
+.pos-grid .btn {
+    height: 50px;
+    width: 100%;
+    font-size: 1.2rem;
+}
+
+.suit-grid .btn {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+}
+
+/* Estado Selecionado (.btn-primary) dentro das grades */
+/* Sobrescreve o estilo padrão do .btn-primary que altera geometria */
+.card-grid .btn.btn-primary,
+.suit-grid .btn.btn-primary,
+.pos-grid .btn.btn-primary {
+    background-color: var(--primary);
+    border: 1px solid var(--primary); /* Mantém borda de 1px */
+    color: #ffffff !important; /* Força texto branco */
+    
+    /* Reseta expansões do .btn-primary original */
+    padding: 0;
+    box-shadow: none;
+    font-size: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+/* Estado Active (Toque) - Apenas visual, sem geometria */
+.card-grid .btn:active,
+.suit-grid .btn:active,
+.pos-grid .btn:active {
+    transform: none !important;
+    filter: brightness(1.1);
+}
