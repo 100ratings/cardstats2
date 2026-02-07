@@ -135,7 +135,7 @@ $(document).ready(function(){
         var $c1 = $('#chart1');
         if ($c1.length > 0 && $c1.parent().attr('id') !== 'chart1-wrapper') {
             $c1.wrap('<div id="chart1-wrapper" style="position:relative;"></div>');
-            $('<div class="suit-overlay">' +
+            $('<div class="suits-overlay">' +
               '<div class="suit-col text-dark-suit">♠</div>' +
               '<div class="suit-col text-red">♥</div>' +
               '<div class="suit-col text-dark-suit">♣</div>' +
