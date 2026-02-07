@@ -11,6 +11,7 @@
     --accent: #3b82f6; /* Blue - Info */
     --danger: #ef4444;
     --border: #334155;
+    --content-offset-y: 0px; /* Ajuste global da posição vertical do conteúdo */
 }
 
 body {
@@ -23,6 +24,13 @@ body {
     flex-direction: column;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+}
+
+.app-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(var(--content-offset-y));
 }
 
 /* Layout Containers */
