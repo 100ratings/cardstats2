@@ -8,57 +8,134 @@
     <link href="css/ratchet-theme-ios.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            background-color: #FFFDF6;
+            color: #333333;
             font-family: "Helvetica Neue", Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .container {
-            text-align: center;
             padding: 20px;
-            max-width: 400px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #cccccc;
+            margin-bottom: 20px;
         }
         h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #d4af37; /* Gold color for a premium poker feel */
+            font-size: 28px;
+            margin: 0;
+            color: #1a1a1a;
         }
-        p {
-            font-size: 16px;
-            line-height: 1.5;
+        .subtitle {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 5px;
+        }
+        .content {
+            line-height: 1.8;
+            color: #444444;
             margin-bottom: 30px;
-            color: #cccccc;
+        }
+        .content p {
+            margin: 15px 0;
+            text-align: justify;
+            font-size: 15px;
+        }
+        .highlight {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-left: 4px solid #b22222;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+        .highlight h3 {
+            margin-top: 0;
+            color: #b22222;
+            font-size: 16px;
+        }
+        .highlight ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .highlight li {
+            margin: 8px 0;
+            font-size: 14px;
         }
         .btn-poker {
-            background-color: #b22222; /* Firebrick red */
+            background-color: #b22222;
             border: none;
             color: white;
             padding: 15px 30px;
-            font-size: 18px;
+            font-size: 16px;
             border-radius: 5px;
             text-transform: uppercase;
             font-weight: bold;
             cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
             box-shadow: 0 4px #8b0000;
+            transition: all 0.2s;
         }
         .btn-poker:active {
             box-shadow: 0 2px #8b0000;
             transform: translateY(2px);
         }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999999;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #cccccc;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Estatísticas de Cartas</h1>
-        <p>
-            Esta plataforma é utilizada por jogadores profissionais de Poker para analisar a distribuição estatística e probabilidades de cartas, otimizando estratégias para jogos como Black Jack (21).
-        </p>
+        <header>
+            <h1>Análise Estatística de Cartas</h1>
+            <p class="subtitle">Ferramenta profissional para jogadores de Poker e Blackjack</p>
+        </header>
+
+        <div class="content">
+            <p>
+                Bem-vindo à plataforma de análise estatística de cartas, desenvolvida especificamente para jogadores profissionais de Poker e entusiastas de Blackjack (21). Esta ferramenta oferece uma análise detalhada e baseada em dados reais sobre a distribuição e probabilidade de cartas em diferentes cenários de jogo.
+            </p>
+
+            <p>
+                Nosso sistema coleta e analisa dados de milhares de jogadas para fornecer estatísticas precisas sobre como as cartas se distribuem quando cortadas em diferentes posições do baralho. Essas informações são fundamentais para jogadores que desejam otimizar suas estratégias e tomar decisões mais informadas durante o jogo.
+            </p>
+
+            <div class="highlight">
+                <h3>Como Funciona</h3>
+                <p>
+                    O analisador funciona de forma simples e intuitiva:
+                </p>
+                <ul>
+                    <li><strong>Selecione uma carta:</strong> Escolha qualquer carta do baralho (de Ás a Rei, em qualquer naipe)</li>
+                    <li><strong>Indique a posição:</strong> Digite a posição onde você cortaria o baralho (de 1 a 52)</li>
+                    <li><strong>Receba os resultados:</strong> Obtenha as probabilidades precisas baseadas em nossa base de dados estatística</li>
+                </ul>
+            </div>
+
+            <p>
+                Os dados apresentados nesta plataforma são resultado de análises contínuas e atualizações regulares, garantindo que você sempre tenha acesso às informações mais precisas e confiáveis. Cada resultado é acompanhado por gráficos visuais que facilitam a compreensão das distribuições de probabilidade.
+            </p>
+
+            <p>
+                Seja você um jogador casual ou profissional, esta ferramenta é essencial para compreender melhor os padrões de distribuição de cartas e aprimorar sua estratégia de jogo. Utilize esses dados para tomar decisões mais inteligentes e aumentar suas chances de sucesso.
+            </p>
+        </div>
+
         <button class="btn-poker" onclick="window.location.href='index.html?start=true'">Acessar Analisador</button>
+
+        <div class="footer">
+            <p>Análise estatística baseada em dados coletados continuamente. Atualizado regularmente.</p>
+        </div>
     </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    // Probabilidades fixas fornecidas pelo usuário
+    // Probabilidades fixas fornecidas pelo usuário (em porcentagem)
     const FIXED_PROBABILITIES = {
         "S": [5.33, 1.78, 2.49, 1.78, 1.78, 1.78, 2.84, 1.77, 1.95, 2.31, 3.20, 4.44, 3.55],
         "H": [5.33, 1.78, 2.49, 1.78, 1.78, 1.78, 2.84, 1.77, 1.95, 2.31, 3.20, 4.44, 3.55],
@@ -44,21 +44,19 @@ $(document).ready(function(){
         var finalCardOdds = 100 / cardFixedPerc;
 
         // 2) Calcular a probabilidade da posição para atingir o ALVO
-        // Probabilidade Final = (1/finalCardOdds) * (1/finalPosOdds) = 1/targetOdds
-        // finalPosOdds = targetOdds / finalCardOdds
         var finalPosOdds = targetOdds / finalCardOdds;
         
         var cardPerc = (100 / finalCardOdds).toFixed(2);
         var posPerc = (100 / finalPosOdds).toFixed(2);
 
-        // 3) Tamanho da amostra dinâmico
-        // Lógica: Base 1.250.000 + (dias desde 01/01/2026 * 150) + variação aleatória diária
+        // 3) Tamanho da amostra dinâmico (mais realista)
+        // Base 145.000 + (dias desde 01/01/2026 * 50) + variação aleatória
         var now = new Date();
         var start = new Date(2026, 0, 1);
         var diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-        var dailyIncrease = diffDays * 150;
+        var dailyIncrease = diffDays * 50;
         var seedBase = (card * 1000) + (suit * 100) + n;
-        var sampleSize = 1250000 + dailyIncrease + Math.floor(seededRandom(seedBase) * 500);
+        var sampleSize = 145000 + dailyIncrease + Math.floor(seededRandom(seedBase) * 5000);
         
         $("#sampleSize").text(sampleSize.toLocaleString('pt-BR'));
         $("#cardLabel").html(cardShort[card] + suitSymbols[suit]);
@@ -77,46 +75,51 @@ $(document).ready(function(){
     }
 
     function renderCharts(card, suit, n, seedBase) {
+        // Array com as 52 cartas em ordem: Espadas (0-12), Copas (13-25), Paus (26-38), Ouros (39-51)
         var cardsData = [];
-        var positionsData = [];
         var suitNames = ["S", "H", "C", "D"];
         
         // Preencher dados das cartas com as probabilidades fixas
-        // Ordem: Espadas (0-12), Copas (13-25), Paus (26-38), Ouros (39-51)
-        ["S", "H", "C", "D"].forEach(s => {
+        suitNames.forEach(s => {
             FIXED_PROBABILITIES[s].forEach(p => {
                 cardsData.push(p);
             });
         });
 
         // Preencher dados das posições (aleatório leve em torno de 1.92% que é 1/52)
+        var positionsData = [];
         for (var i = 0; i < 52; i++) {
             positionsData.push(1.8 + (seededRandom(seedBase + i + 100) * 0.25));
         }
 
         var ticks = new Array(52), pticks = new Array(52), selCardSeries = new Array(52), selPosSeries = new Array(52);
         
+        // Inicializar arrays vazios
         for (var x = 0; x < 52; x++) {
-            ticks[x] = "A"; // Sempre 'A' conforme solicitado
+            ticks[x] = ""; 
             pticks[x] = ""; 
             selCardSeries[x] = 0; 
             selPosSeries[x] = 0;
         }
         
-        // Marcar os naipes no eixo X para orientação
+        // Adicionar apenas a letra "A" na posição da carta selecionada
+        var cardIdx = (suit * 13) + card;
+        ticks[cardIdx] = "A";
+        
+        // Adicionar símbolos dos naipes para orientação
         ticks[6] = "♠"; 
         ticks[19] = "<font color='red'>♥</font>";
         ticks[32] = "♣"; 
         ticks[45] = "<font color='red'>♦</font>";
         
+        // Eixo X para posições
         pticks[0] = "1"; pticks[12] = "13"; pticks[25] = "26"; pticks[38] = "39"; pticks[51] = "52";
 
-        // O traço vermelho deve ser na carta selecionada
-        // Ordem no array cardsData: S(0-12), H(13-25), C(26-38), D(39-51)
-        var cardIdx = (suit * 13) + card;
+        // O traço vermelho deve estar na carta selecionada (cardIdx)
         selCardSeries[cardIdx] = cardsData[cardIdx];
         cardsData[cardIdx] = 0;
 
+        // O traço vermelho deve estar na posição selecionada
         var posIdx = n - 1;
         selPosSeries[posIdx] = positionsData[posIdx];
         positionsData[posIdx] = 0;
