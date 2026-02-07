@@ -2,67 +2,62 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Análise Estatística de Poker & Blackjack</title>
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport">
-    <link href="css/ratchet.css" rel="stylesheet">
-    <link href="css/ratchet-theme-ios.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Card Stats - Blackjack</title>
     <style>
         body {
-            background-color: #EFEFF4;
+            background-color: #CECECE;
             color: #000000;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             height: 100vh;
-            margin: 0;
-            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            text-align: center;
         }
         .container {
-            text-align: center;
             padding: 20px;
-            max-width: 400px;
-            background-color: #F7F7F7;
-            border: 1px solid #CECECE;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
         }
         h1 {
-            font-size: 24px;
+            font-size: 2.5em;
             margin-bottom: 20px;
             color: #000000;
         }
         p {
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 30px;
+            font-size: 1.3em;
             color: #929292;
+            margin-bottom: 50px;
+            line-height: 1.5;
+            font-weight: 500;
         }
-        .btn-poker {
-            background-color: #FF0000;
+        .btn {
+            background-color: #78CDDD;
+            color: #000000;
             border: none;
-            color: #FFFFFF;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
+            padding: 20px 50px;
+            font-size: 1.2em;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px #929292;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease;
         }
-        .btn-poker:active {
-            box-shadow: 0 2px #929292;
-            transform: translateY(2px);
+        .btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Estatísticas de Cartas</h1>
-        <p>
-            Esta plataforma é utilizada por jogadores profissionais de Poker para analisar a distribuição estatística e probabilidades de cartas, otimizando estratégias para jogos como Black Jack (21).
-        </p>
-        <button class="btn-poker" onclick="window.location.href='index.html?start=true'">Acessar Analisador</button>
+        <h1>Card Stats 21</h1>
+        <p>Esse site é direcionado para jogadores profissionais e amadores, para tentar determinar estatísticas de cartas para Black Jack (21).</p>
+        <a href="index.html" class="btn">ENTRAR</a>
     </div>
 </body>
 </html>
