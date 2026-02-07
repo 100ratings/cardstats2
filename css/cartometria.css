@@ -303,7 +303,9 @@ footer {
     filter: brightness(1.1);
 }
 
-/* --- CHART 1 SUIT OVERLAY 
+/* --- CHART 1 SUIT OVERLAY (Horizontal Axis Labels) --- */
+/* Wrapper do gráfico 1 (gerado via JS) */
+#chart1-wrapper {
     position: relative;
 }
 
@@ -312,16 +314,25 @@ footer {
     position: absolute;
     left: 0;
     width: 100%;
-grid-template-columns: repeat(4, 1fr);
-    place-items
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    place-items: center;
     pointer-events: none;
+    z-index: 10;
     bottom: 22px; /* <--- AJUSTE AQUI PARA SUBIR/DESCER A FAIXA */
-}ímbolos */
-#chart1-wrapper .suit {
-    font-size: 22px;
+}
+
+/* Estilo dos símbolos */
+#chart1-wrapper .suits-overlay .suit {
+    margin: 0;
+    padding: 0;
     line-height: 1;
-}pper .spade,
-b { color: #111; }
+    font-size: 22px;
+    display: block;
+}
+
+#chart1-wrapper .spade,
+#chart1-wrapper .club { color: #111; }
 
 #chart1-wrapper .heart,
 #chart1-wrapper .diamond { color: #d22; }
