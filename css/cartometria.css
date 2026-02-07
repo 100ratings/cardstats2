@@ -11,7 +11,7 @@
     --accent: #3b82f6; /* Blue - Info */
     --danger: #ef4444;
     --border: #334155;
-    --content-offset-y: -20px; /* Ajuste global da posição vertical do conteúdo */
+    --content-offset-y: -25px; /* Ajuste global da posição vertical do conteúdo */
 }
 
 body {
