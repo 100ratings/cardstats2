@@ -1,18 +1,18 @@
 $(document).ready(function(){
-    // Probabilidades fixas fornecidas pelo usuário (em porcentagem)
+    // Novas probabilidades fixas das cartas (em porcentagem)
     const FIXED_PROBABILITIES = {
-        "S": [5.33, 1.78, 2.49, 1.78, 1.78, 1.78, 2.84, 1.77, 1.95, 2.31, 3.20, 4.44, 3.55],
-        "H": [5.33, 1.78, 2.49, 1.78, 1.78, 1.78, 2.84, 1.77, 1.95, 2.31, 3.20, 4.44, 3.55],
-        "C": [2.29, 0.76, 1.07, 0.76, 0.76, 0.76, 1.22, 0.76, 0.83, 0.99, 1.37, 1.90, 1.52],
-        "D": [2.29, 0.76, 1.07, 0.76, 0.76, 0.76, 1.22, 0.76, 0.83, 0.99, 1.37, 1.90, 1.52]
+        "S": [8.427, 1.453, 2.509, 1.255, 1.454, 1.321, 2.906, 1.322, 1.387, 2.245, 3.038, 4.226, 3.434],
+        "H": [6.637, 1.404, 2.425, 1.213, 1.405, 1.280, 2.791, 1.281, 1.343, 2.156, 2.928, 6.210, 3.328],
+        "C": [2.726, 0.897, 1.548, 0.779, 0.898, 0.816, 1.793, 0.817, 0.857, 1.387, 1.877, 2.611, 2.108],
+        "D": [2.853, 0.885, 1.528, 0.771, 0.886, 0.809, 1.772, 0.810, 0.849, 1.376, 1.865, 2.597, 2.094]
     };
 
-    // Probabilidades estimadas para posições 1-52 fornecidas pelo usuário
+    // Novas probabilidades estimadas para posições 1-52
     const POSITION_PROBABILITIES = [
-        3.30, 2.16, 5.08, 1.65, 2.03, 1.65, 9.53, 1.91, 1.78, 3.05, 2.80, 2.67, 4.06, // 1-13
-        1.52, 1.52, 1.52, 3.81, 1.40, 1.40, 1.40, 4.45, 2.54, 3.56, 1.34, 1.34, 1.27, // 14-26
-        1.21, 1.21, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, // 27-39
-        1.14, 1.21, 2.41, 1.21, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.14, 1.22  // 40-52
+        2.934, 1.462, 6.178, 0.584, 1.318, 0.612, 12.648, 0.846, 0.792, 2.156, 2.012, 1.886, 4.578, // 1-13
+        0.566, 0.548, 0.532, 3.212, 0.512, 0.496, 0.478, 4.214, 1.772, 3.086, 0.462, 0.448, 0.436, // 14-26
+        0.424, 0.414, 0.404, 0.394, 0.386, 0.378, 0.370, 0.362, 0.354, 0.346, 0.338, 0.332, 0.326, // 27-39
+        0.320, 0.314, 2.604, 0.308, 0.304, 0.300, 0.296, 0.292, 0.288, 0.284, 0.280, 0.276, 0.272  // 40-52
     ];
 
     showResults();
@@ -44,7 +44,6 @@ $(document).ready(function(){
         var finalPosOdds = 100 / posFixedPerc;
         
         // 3) Calcular Probabilidade Estimada (Multiplicação)
-        // O usuário quer que XX,XX * XX,XX resulte em um valor de 4 dígitos (2.7XX)
         // Exemplo: 40,16 * 67,63 = 2716,0208 -> Arredondar para 2716
         var rawTargetOdds = finalCardOdds * finalPosOdds;
         var targetOdds = Math.round(rawTargetOdds);
@@ -77,10 +76,10 @@ $(document).ready(function(){
 
         if (window.spinner) window.spinner.stop();
         
-        renderCharts(card, suit, n, posFixedPerc);
+        renderCharts(card, suit, n);
     }
 
-    function renderCharts(card, suit, n, posPercentage) {
+    function renderCharts(card, suit, n) {
         var cardsData = [];
         var suitNames = ["S", "H", "C", "D"];
         
@@ -129,12 +128,12 @@ $(document).ready(function(){
                 renderer: $.jqplot.BarRenderer,
                 rendererOptions: { fillToZero: true, barWidth: 3, shadow: false }
             },
-            series: [{ label: " ", color: "#CECECE" }, { label: " ", color: "#FF0000" }],
+            series: [{ label: " ", color: "#78CDDD" }, { label: " ", color: "#FF3B3B" }],
             axes: {
                 xaxis: { renderer: $.jqplot.CategoryAxisRenderer, showTicks: true },
                 yaxis: { showTicks: false, pad: 0 }
             },
-            grid: { drawGridLines: false, background: '#F7F7F7', borderWeight: 0, shadow: false }
+            grid: { drawGridLines: false, background: '#FFFDF6', borderWeight: 0, shadow: false }
         };
 
         var cardChart = $.jqplot('chart1', [cardsData, selCardSeries], $.extend(true, {}, commonOptions, {
