@@ -95,31 +95,6 @@ $(document).ready(function(){
             positionsData.push(Math.floor(seededRandom(fixedSeed + i + 100) * 1000) + 500);
         }
 
-        // Ordenar os dados gerados para encontrar os maiores valores
-        var sortedCards = cardsData.slice().sort(function(a, b) { return b - a; });
-        
-        // Lista de posições prioritárias (convertidas para índice 0-based)
-        // 1->0, 14->13, 27->26, 13->12, 26->25, 39->38, 52->51, 12->11, 25->24, 11->10, 24->23, 38->37, 51->50
-        var priorityIndices = [0, 13, 26, 12, 25, 38, 51, 11, 24, 10, 23, 37, 50];
-        var newCardsData = new Array(52);
-        var filledIndices = {};
-
-        // Distribui os maiores valores nas posições prioritárias
-        for (var i = 0; i < priorityIndices.length; i++) {
-            var idx = priorityIndices[i];
-            newCardsData[idx] = sortedCards[i];
-            filledIndices[idx] = true;
-        }
-
-        // Preenche o restante das posições com os valores restantes
-        var sortedIdx = priorityIndices.length;
-        for (var i = 0; i < 52; i++) {
-            if (!filledIndices[i]) {
-                newCardsData[i] = sortedCards[sortedIdx++];
-            }
-        }
-        cardsData = newCardsData;
-
         var stats = { cards: cardsData, positions: positionsData };
         var ticks = new Array(52), pticks = new Array(52), selCardSeries = new Array(52), selPosSeries = new Array(52);
         
